@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Data\Competitions.Data.Models\Competitions.Data.Models.csproj" />
+      <ProjectReference Include="..\..\Domain\Competitions.Domain.Mapping\Competitions.Domain.Mapping.csproj" />
+    </ItemGroup>
+
+</Project>
