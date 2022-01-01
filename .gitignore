@@ -31,7 +31,11 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# EF Migrations
+**/**/Migrations/**
+
 # Rider
+.idea
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
