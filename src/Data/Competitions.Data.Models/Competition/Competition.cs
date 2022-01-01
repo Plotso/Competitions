@@ -36,6 +36,9 @@
         public DateTime Ending { get; set; }
         
         [Required]
+        public string Location { get; set; }
+        
+        [Required]
         public int SportId { get; set; }
         
         public virtual Sport Sport { get; set; }

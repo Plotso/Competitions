@@ -30,6 +30,8 @@
         
         public double? CloseLosePoints { get; set; }
         
+        public string Location { get; set; }
+        
         public DateTime Starting { get; set; }
         
         public DateTime Ending { get; set; }

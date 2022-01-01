@@ -2,6 +2,7 @@
 {
     using System.Reflection;
     using Domain.Mapping;
+    using Enums;
     using Microsoft.Extensions.DependencyInjection;
     using Services;
     using Services.Interfaces;
@@ -14,7 +15,8 @@
         {
             return 
                 serviceCollection.RegisterMapper(typeof(SportViewModel).GetTypeInfo().Assembly)
-                    .AddTransient<ISportsService, SportsService>();
+                    .AddTransient<ISportsService, SportsService>()
+                    .AddTransient<ICompetitionsService, CompetitionsService>();
         }
     }
 }

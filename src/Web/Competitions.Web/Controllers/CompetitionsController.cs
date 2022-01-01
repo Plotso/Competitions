@@ -1,29 +1,55 @@
 ﻿namespace Competitions.Web.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Domain.BL.Enums;
+    using Domain.BL.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using ViewModels.Competition;
 
     public class CompetitionsController : Controller
     {
-        public async Task<IActionResult> FullCompetitionsList()
+        private readonly ICompetitionsService _competitionsService;
+        private readonly ILogger<CompetitionsController> _logger;
+
+        public CompetitionsController(ICompetitionsService competitionsService, ILogger<CompetitionsController> logger)
         {
-            throw new NotImplementedException();
+            _competitionsService = competitionsService;
+            _logger = logger;
+        }
+        public async Task<IActionResult> All()
+        {
+            var upcomingCompetitions =
+                _competitionsService.GetAll<CompetitionViewModel>();
+
+            return View(upcomingCompetitions.ToList());
         }
         
         public async Task<IActionResult> Upcoming()
         {
-            throw new NotImplementedException();
+            var upcomingCompetitions =
+                _competitionsService.GetAllByStatus<CompetitionViewModel>(CompetitionStatus.Upcoming);
+
+            return View(upcomingCompetitions.ToList());
         }
         
         public async Task<IActionResult> Active()
         {
-            throw new NotImplementedException();
+            var upcomingCompetitions =
+                _competitionsService.GetAllByStatus<CompetitionViewModel>(CompetitionStatus.Active);
+
+            return View(upcomingCompetitions.ToList());
         }
         
         public async Task<IActionResult> Finished()
         {
-            throw new NotImplementedException();
+            var upcomingCompetitions =
+                _competitionsService.GetAllByStatus<CompetitionViewModel>(CompetitionStatus.Finished);
+
+            return View(upcomingCompetitions.ToList());
         }
         
         public async Task<IActionResult> BySport(int sportId, bool isFinished)

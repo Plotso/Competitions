@@ -35,6 +35,10 @@
         
         public DateTime Ending { get; set; }
         
+        [Required]
+        [MinLength(2)]
+        public string Location { get; set; }
+        
         public string SportId { get; set; }
     }
 }
