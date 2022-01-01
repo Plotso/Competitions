@@ -1,4 +1,4 @@
-﻿namespace Competitions.Web.ViewModels
+﻿namespace Competitions.Web.ViewModels.Sport
 {
     using Data.Models;
     using Domain.BL.Mapping;

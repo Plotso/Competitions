@@ -2,7 +2,7 @@
 {
     using Common.Models;
 
-    public class Sport : BaseModel<int>
+    public class Sport : BaseDeletableModel<int>
     {
         public string Name { get; set; }
         

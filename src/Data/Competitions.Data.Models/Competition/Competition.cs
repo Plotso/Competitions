@@ -1,5 +1,6 @@
 ﻿namespace Competitions.Data.Models.Competition
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Common.Models;
@@ -23,6 +24,16 @@
         public decimal? EntryFee { get; set; }
         
         public decimal? WinningPrize { get; set; }
+        
+        public double? WinPoints { get; set; }
+        
+        public double? DrawPoints { get; set; }
+        
+        public double? CloseLosePoints { get; set; }
+        
+        public DateTime Starting { get; set; }
+        
+        public DateTime Ending { get; set; }
         
         [Required]
         public int SportId { get; set; }

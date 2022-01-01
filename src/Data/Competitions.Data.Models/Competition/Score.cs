@@ -10,6 +10,7 @@
         public double CompetitionParticipantAScore { get; set; }
         public double CompetitionParticipantBScore { get; set; }
         public ScoreOutcome Result { get; set; } 
+        public string Details { get; set; }
     }
     public enum ScoreOutcome
     {
