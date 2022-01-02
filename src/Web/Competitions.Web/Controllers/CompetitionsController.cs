@@ -9,15 +9,18 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using ViewModels.Competition;
+    using ViewModels.Sport;
 
     public class CompetitionsController : Controller
     {
         private readonly ICompetitionsService _competitionsService;
+        private readonly ISportsService _sportsService;
         private readonly ILogger<CompetitionsController> _logger;
 
-        public CompetitionsController(ICompetitionsService competitionsService, ILogger<CompetitionsController> logger)
+        public CompetitionsController(ICompetitionsService competitionsService, ISportsService sportsService, ILogger<CompetitionsController> logger)
         {
             _competitionsService = competitionsService;
+            _sportsService = sportsService;
             _logger = logger;
         }
         public async Task<IActionResult> All()
@@ -54,12 +57,19 @@
         
         public async Task<IActionResult> BySport(int sportId, bool isFinished)
         {
+            var sport = _sportsService.GetById<SportViewModel>(sportId);
+            if (sport == null)
+            {
+                _logger.LogDebug("Sport with ID: {sportId} is missing from the DB", sportId);
+                return RedirectToAction("PageNotFound", "Home");
+            }
+            
             var statuses = isFinished
                 ? new[] { CompetitionStatus.Finished }
                 : new[] { CompetitionStatus.Active, CompetitionStatus.Upcoming };
             var competitions =
                 _competitionsService.GetAllBySportAndStatuses<CompetitionViewModel>(sportId, statuses).ToList();
-
+            // ToDo: Return another view in case of no competitions
             return View(competitions.ToList());
         }
     }
