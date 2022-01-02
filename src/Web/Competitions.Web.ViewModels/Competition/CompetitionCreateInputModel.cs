@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Data.Models.Competition;
-    using Domain.BL.Mapping;
     using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class CompetitionCreateInputModel

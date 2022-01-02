@@ -10,6 +10,7 @@
     using Data.Models.Competition;
     using Enums;
     using Interfaces;
+    using Mapping.Mapping.Single;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Web.ViewModels.Competition;
@@ -21,56 +22,55 @@
         private readonly ILogger<CompetitionsService> _logger;
         private readonly IMapper _mapper;
 
-        public CompetitionsService(IDeletableEntityRepository<Competition> competitionsRepository, IRepository<Sport> sportsRepository,ILogger<CompetitionsService> logger, IMapper mapper)
+        public CompetitionsService(IDeletableEntityRepository<Competition> competitionsRepository, IRepository<Sport> sportsRepository,ILogger<CompetitionsService> logger)//, IMapper mapper)
         {
             _competitionsRepository = competitionsRepository;
             _sportsRepository = sportsRepository;
             _logger = logger;
-            _mapper = mapper;
+           // _mapper = mapper;
         }
 
-        public T GetById<T>(int competitionId) 
-            => _mapper.Map<T>(GetById(competitionId));
+        public T GetById<T>(int competitionId) => _competitionsRepository.All().To<T>().FirstOrDefault();
 
         public IEnumerable<T> GetAll<T>() 
-            => _competitionsRepository.All().Select(c => _mapper.Map<T>(c));
+            => _competitionsRepository.All().To<T>();
 
         public IEnumerable<T> GetAllByStatus<T>(CompetitionStatus status)
         {
             var filter = GetFilterByStatus(status);
-            var competitions = _competitionsRepository.All().AsEnumerable().Where(filter);
-            return competitions.Select(c => _mapper.Map<T>(c));
+            var competitions = _competitionsRepository.All().AsEnumerable().Where(filter).AsQueryable();
+            return competitions.To<T>();
         }
 
         public IEnumerable<T> GetAllBySport<T>(int sportId) 
-            => _competitionsRepository.All().Where(c => c.SportId == sportId).Select(c => _mapper.Map<T>(c));
+            => _competitionsRepository.All().Where(c => c.SportId == sportId).To<T>();
 
         public IEnumerable<T> GetAllBySportAndStatus<T>(int sportId, CompetitionStatus status)
         {
             var statusFilter = GetFilterByStatus(status);
-            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.SportId == sportId && statusFilter.Invoke(c));
-            return competitions.Select(c => _mapper.Map<T>(c));
+            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.SportId == sportId && statusFilter.Invoke(c)).AsQueryable();
+            return competitions.To<T>();
         }
 
         public IEnumerable<T> GetAllBySportAndStatuses<T>(int sportId, params CompetitionStatus[] statuses)
         {
             var filters = statuses.Select(GetFilterByStatus);
-            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.SportId == sportId && (filters.Any(f => f.Invoke(c))));
-            return competitions.Select(c => _mapper.Map<T>(c));
+            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.SportId == sportId && (filters.Any(f => f.Invoke(c)))).AsQueryable();
+            return competitions.To<T>();
         }
 
         public IEnumerable<T> GetAllByOrganiserAndStatus<T>(string organiserId, CompetitionStatus status)
         {
             var statusFilter = GetFilterByStatus(status);
-            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.OrganiserId == organiserId && statusFilter.Invoke(c));
-            return competitions.Select(c => _mapper.Map<T>(c));
+            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.OrganiserId == organiserId && statusFilter.Invoke(c)).AsQueryable();
+            return competitions.To<T>();
         }
 
         public IEnumerable<T> GetAllByTypeAndStatus<T>(CompetitionType type, CompetitionStatus status)
         {
             var statusFilter = GetFilterByStatus(status);
-            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.Type == type && statusFilter.Invoke(c));
-            return competitions.Select(c => _mapper.Map<T>(c));
+            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.Type == type && statusFilter.Invoke(c)).AsQueryable();
+            return competitions.To<T>();
         }
 
         public async Task CreateAsync(CompetitionCreateInputModel inputModel)

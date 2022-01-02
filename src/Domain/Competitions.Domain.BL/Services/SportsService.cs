@@ -7,28 +7,29 @@
     using Data.Common.Repositories;
     using Data.Models;
     using Interfaces;
+    using Mapping.Mapping.Single;
     using Web.ViewModels.Sport;
 
     public class SportsService : ISportsService
     {
         private readonly IDeletableEntityRepository<Sport> _sportsRepository;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
-        public SportsService(IDeletableEntityRepository<Sport> sportsRepository, IMapper mapper)
+        public SportsService(IDeletableEntityRepository<Sport> sportsRepository)//, IMapper mapper)
         {
             _sportsRepository = sportsRepository;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
-        public T GetById<T>(int sportId) => _mapper.Map<T>(GetById(sportId));
+        public T GetById<T>(int sportId) => _sportsRepository.All().Where(s => s.Id == sportId).To<T>().FirstOrDefault();
 
         public IEnumerable<T> GetAll<T>()
         {
             var sports = _sportsRepository.All().Where(s => s.IsVerified);
-            return sports.Select(s => _mapper.Map<T>(s));
+            return sports.To<T>();
         }
 
-        public IEnumerable<T> GetCompleteListAdmin<T>() => _sportsRepository.All().Select(s => _mapper.Map<T>(s)); // ToDo: Move this to admin area
+        public IEnumerable<T> GetCompleteListAdmin<T>() => _sportsRepository.All().To<T>(); // ToDo: Move this to admin area
 
         public async Task CreateAsync(SportCreateInputModel inputModel)
         {

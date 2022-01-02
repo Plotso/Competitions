@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using Data.Models.Competition;
-    using Domain.BL.Mapping;
+    using Domain.Mapping.Mapping;
 
     public class CompetitionInputModel : IMapFrom<Competition>, IMapTo<Competition>
     {

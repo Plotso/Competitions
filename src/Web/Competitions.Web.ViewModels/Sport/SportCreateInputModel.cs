@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using Data.Models;
-    using Domain.BL.Mapping;
+    using Domain.Mapping.Mapping;
 
     public class SportCreateInputModel : IMapTo<Sport>
     {

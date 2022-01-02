@@ -1,6 +1,7 @@
 ﻿namespace Competitions.Domain.BL
 {
     using System.Reflection;
+    using Data.Models;
     using Domain.Mapping;
     using Enums;
     using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,7 @@
         public static IServiceCollection RegisterDomainServices(this IServiceCollection serviceCollection)
         {
             return 
-                serviceCollection.RegisterMapper(typeof(SportViewModel).GetTypeInfo().Assembly)
+                serviceCollection.RegisterMapper(typeof(SportViewModel).GetTypeInfo().Assembly, typeof(Sport).GetTypeInfo().Assembly)
                     .AddTransient<ISportsService, SportsService>()
                     .AddTransient<ICompetitionsService, CompetitionsService>();
         }

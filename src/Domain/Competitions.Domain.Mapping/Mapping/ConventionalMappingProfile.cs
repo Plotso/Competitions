@@ -1,4 +1,4 @@
-﻿namespace Competitions.Domain.BL.Mapping
+﻿namespace Competitions.Domain.Mapping.Mapping
 {
     using System;
     using System.Linq;

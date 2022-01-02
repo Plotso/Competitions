@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Customer;
     using Data.Models.Competition;
-    using Domain.BL.Mapping;
+    using Domain.Mapping.Mapping;
     using Rating;
     using Sport;
 

@@ -1,5 +1,6 @@
 namespace Competitions.Web
 {
+    using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -8,8 +9,10 @@ namespace Competitions.Web
     using Data;
     using Data.Seeding;
     using Domain.BL;
+    using Domain.Mapping.Mapping.Single;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using ViewModels.Sport;
 
     public class Startup
     {
@@ -44,6 +47,7 @@ namespace Competitions.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            AutoMapperConfig.RegisterMappings(typeof(SportViewModel).GetTypeInfo().Assembly);
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {

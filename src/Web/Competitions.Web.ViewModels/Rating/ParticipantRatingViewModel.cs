@@ -1,7 +1,7 @@
 ﻿namespace Competitions.Web.ViewModels.Rating
 {
     using Data.Models.Rating;
-    using Domain.BL.Mapping;
+    using Domain.Mapping.Mapping;
 
     public class ParticipantRatingViewModel : IMapFrom<ParticipantRating>
     {

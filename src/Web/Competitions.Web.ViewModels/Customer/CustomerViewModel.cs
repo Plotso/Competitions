@@ -1,7 +1,7 @@
 ﻿namespace Competitions.Web.ViewModels.Customer
 {
     using Data.Models.Customer;
-    using Domain.BL.Mapping;
+    using Domain.Mapping.Mapping;
 
     public class CustomerViewModel : IMapFrom<Customer>
     {

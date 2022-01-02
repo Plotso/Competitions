@@ -7,7 +7,7 @@
     {
         public static IServiceCollection RegisterMapper(this IServiceCollection serviceCollection, params Assembly[] assemblies)
         {
-            return serviceCollection.AddAutoMapper(assemblies);
+            return serviceCollection; //.AddAutoMapper(assemblies);
         }
     }
 }

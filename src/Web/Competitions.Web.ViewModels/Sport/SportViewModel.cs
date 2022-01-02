@@ -1,7 +1,7 @@
 ﻿namespace Competitions.Web.ViewModels.Sport
 {
     using Data.Models;
-    using Domain.BL.Mapping;
+    using Domain.Mapping.Mapping;
 
     public class SportViewModel : IMapFrom<Sport>
     {
