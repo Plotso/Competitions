@@ -24,7 +24,7 @@
 
         IEnumerable<T> GetAllByTypeAndStatus<T>(CompetitionType type, CompetitionStatus status);
 
-        Task CreateAsync(CompetitionCreateInputModel inputModel);
+        Task CreateAsync(CompetitionCreateInputModel inputModel, string organiserId);
 
         Task EditAsync(CompetitionModifyInputModel inputModel);
 

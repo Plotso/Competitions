@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Competitions.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@{
     ViewData["Title"] = "Competitions.bg - Спортни Турнири и Лиги";
     ViewData["Keywords"] = "Състезания, Турнири, Лиги, Спорт";
     ViewData["Description"] = "Платформа за организиране и участие в турнири, лиги и разнообразни спортни състезания.";
@@ -21,6 +24,14 @@
             Предстоящи състезания
         </a>
     </button>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <button type="button" class="btn btn-light">
+            <a class="page-link-with-hover" asp-controller="Competitions" asp-action="Create" title="Създай състезание">
+                Създай състезание
+            </a>
+        </button>
+    }
 </div>
 
 

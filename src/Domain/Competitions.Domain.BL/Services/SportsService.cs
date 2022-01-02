@@ -13,12 +13,10 @@
     public class SportsService : ISportsService
     {
         private readonly IDeletableEntityRepository<Sport> _sportsRepository;
-        //private readonly IMapper _mapper;
 
-        public SportsService(IDeletableEntityRepository<Sport> sportsRepository)//, IMapper mapper)
+        public SportsService(IDeletableEntityRepository<Sport> sportsRepository)
         {
             _sportsRepository = sportsRepository;
-            //_mapper = mapper;
         }
 
         public T GetById<T>(int sportId) => _sportsRepository.All().Where(s => s.Id == sportId).To<T>().FirstOrDefault();

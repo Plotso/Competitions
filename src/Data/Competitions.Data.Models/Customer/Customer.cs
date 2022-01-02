@@ -1,9 +1,15 @@
 ﻿namespace Competitions.Data.Models.Customer
 {
+    using System;
     using Common.Models;
 
     public class Customer : BaseDeletableModel<string>
     {
+        public Customer()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+        
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
         

@@ -8,7 +8,9 @@
     using Data.Common.Repositories;
     using Data.Models;
     using Data.Models.Competition;
+    using Data.Models.Customer;
     using Enums;
+    using Exceptions;
     using Interfaces;
     using Mapping.Mapping.Single;
     using Microsoft.Extensions.Logging;
@@ -19,15 +21,19 @@
     {
         private readonly IDeletableEntityRepository<Competition> _competitionsRepository;
         private readonly IRepository<Sport> _sportsRepository;
+        private readonly IRepository<Organiser> _organisersRepository;
         private readonly ILogger<CompetitionsService> _logger;
-        private readonly IMapper _mapper;
 
-        public CompetitionsService(IDeletableEntityRepository<Competition> competitionsRepository, IRepository<Sport> sportsRepository,ILogger<CompetitionsService> logger)//, IMapper mapper)
+        public CompetitionsService(
+            IDeletableEntityRepository<Competition> competitionsRepository,
+            IRepository<Sport> sportsRepository,
+            IRepository<Organiser> organisersRepository,
+            ILogger<CompetitionsService> logger)
         {
             _competitionsRepository = competitionsRepository;
             _sportsRepository = sportsRepository;
+            _organisersRepository = organisersRepository;
             _logger = logger;
-           // _mapper = mapper;
         }
 
         public T GetById<T>(int competitionId) => _competitionsRepository.All().To<T>().FirstOrDefault();
@@ -73,8 +79,9 @@
             return competitions.To<T>();
         }
 
-        public async Task CreateAsync(CompetitionCreateInputModel inputModel)
+        public async Task CreateAsync(CompetitionCreateInputModel inputModel, string organiserId)
         {
+            var organiser = _organisersRepository.All().FirstOrDefault(o => o.Id == organiserId);
             var competitionUpdate = inputModel.Competition;
             var competition = new Competition
             {
@@ -89,18 +96,19 @@
                 Title = competitionUpdate.Title,
                 Information = competitionUpdate.Information,
                 Rules = competitionUpdate.Rules,
-                Type = (CompetitionType)((int)competitionUpdate.Type)
+                Location = competitionUpdate.Location,
+                Organiser = organiser,
+                //Type = (CompetitionType)((int)competitionUpdate.Type)
+                Type = (CompetitionType)(int.Parse(competitionUpdate.TypeId))
             };
 
             var sportId = int.Parse(inputModel.Competition.SportId);
             var sport = _sportsRepository.All().FirstOrDefault(s => s.Id == sportId);
             if (sport == null)
             {
-                var inputJson = JsonConvert.SerializeObject(inputModel, Formatting.Indented);
-                _logger.LogError("Couldn't create competition due to missing sport. Request: {newLine} {inputJson}", Environment.NewLine, inputJson);
                 //ToDo: Generate unique code per log?
-                throw new ArgumentException(
-                    "Competition creation failed. Couldn't find sport desired sportId in the database.Please try again or reach out for support.");
+                throw new MissingSportException(
+                    $"Competition creation failed. Couldn't find desired Sport in the database.Please try again or reach out for support.");
             }
             competition.Sport = sport;
 
@@ -150,7 +158,7 @@
         }
 
         private Func<Competition, bool> GetFilterByStatus(CompetitionStatus status) => status switch
-        {
+        { // ToDo: Verify filters since results on site ain't correct
             CompetitionStatus.Active => ActiveFilter(),
             CompetitionStatus.Upcoming => UpcomingFilter(),
             CompetitionStatus.Finished => FinishedFilter(),

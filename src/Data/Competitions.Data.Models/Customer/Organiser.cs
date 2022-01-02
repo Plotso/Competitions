@@ -1,5 +1,6 @@
 ﻿namespace Competitions.Data.Models.Customer
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Common.Models;
@@ -8,6 +9,11 @@
 
     public class Organiser : BaseDeletableModel<string>
     {
+        public Organiser()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+        
         [Required]
         public string CustomerId { get; set; }
         public virtual Customer Customer { get; set; }

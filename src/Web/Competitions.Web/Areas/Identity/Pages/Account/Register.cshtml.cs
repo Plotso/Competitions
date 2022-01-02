@@ -19,6 +19,7 @@ namespace Competitions.Web.Areas.Identity.Pages.Account
 {
     using Common;
     using Data.Common.Repositories;
+    using Domain.BL.Services.Interfaces;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel
@@ -28,19 +29,22 @@ namespace Competitions.Web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IDeletableEntityRepository<ApplicationUser> _usersRepository;
+        private readonly ICustomersService _customersService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IDeletableEntityRepository<ApplicationUser> usersRepository)
+            IDeletableEntityRepository<ApplicationUser> usersRepository,
+            ICustomersService customersService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
             _usersRepository = usersRepository;
+            _customersService = customersService;
         }
 
         [BindProperty]
@@ -53,7 +57,6 @@ namespace Competitions.Web.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
             [Display(Name = "Username")]
             public string Username { get; set; }
             
@@ -99,6 +102,9 @@ namespace Competitions.Web.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    // Create Customer, Participant & Organiser
+                    var userId = _usersRepository.All().FirstOrDefault(u => u.Email == user.Email)?.Id;
+                    await _customersService.CreateInternalCustomer(userId);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

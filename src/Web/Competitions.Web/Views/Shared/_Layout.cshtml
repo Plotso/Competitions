@@ -24,8 +24,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Състезания</a>
+                        <!--
+                        <div class="btn-group dropright">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Състезания
+                            </button>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="1">Футбол</a></button>
+                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="2">Тенис</a></button>
+                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="3">Шах</a></button>
+                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="4">ESports</a></button>
+                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="5">Скуош</a></button>
+                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="6">Дартс</a></button>
+                            </div>
+                        </div>
+                        -->
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Състезания</a>
+                            <div class="dropdown-menu dropright" aria-labelledby="navbarDropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">По Спорт</a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="1">Футбол</a></button>
@@ -35,9 +50,11 @@
                                     <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="5">Скуош</a></button>
                                     <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="6">Дартс</a></button>
                                 </div>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Upcoming">Предстоящи</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Active">Активни</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Finished">Приключили</a></button>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Upcoming">Предстоящи</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Active">Активни</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Finished">Приключили</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="All">Всички състезания</a>
                             </div>
                         </li>
                         <li class="nav-item">
