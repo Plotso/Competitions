@@ -38,23 +38,29 @@
         
         public async Task<IActionResult> Active()
         {
-            var upcomingCompetitions =
+            var competitions =
                 _competitionsService.GetAllByStatus<CompetitionViewModel>(CompetitionStatus.Active);
 
-            return View(upcomingCompetitions.ToList());
+            return View(competitions.ToList());
         }
         
         public async Task<IActionResult> Finished()
         {
-            var upcomingCompetitions =
+            var competitions =
                 _competitionsService.GetAllByStatus<CompetitionViewModel>(CompetitionStatus.Finished);
 
-            return View(upcomingCompetitions.ToList());
+            return View(competitions.ToList());
         }
         
         public async Task<IActionResult> BySport(int sportId, bool isFinished)
         {
-            throw new NotImplementedException();
+            var statuses = isFinished
+                ? new[] { CompetitionStatus.Finished }
+                : new[] { CompetitionStatus.Active, CompetitionStatus.Upcoming };
+            var competitions =
+                _competitionsService.GetAllBySportAndStatuses<CompetitionViewModel>(sportId, statuses).ToList();
+
+            return View(competitions.ToList());
         }
     }
 }

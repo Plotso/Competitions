@@ -18,6 +18,8 @@
         
         IEnumerable<T> GetAllBySportAndStatus<T>(int sportId, CompetitionStatus status);
         
+        IEnumerable<T> GetAllBySportAndStatuses<T>(int sportId, params CompetitionStatus[] statuses);
+        
         IEnumerable<T> GetAllByOrganiserAndStatus<T>(string organiserId, CompetitionStatus status);
 
         IEnumerable<T> GetAllByTypeAndStatus<T>(CompetitionType type, CompetitionStatus status);

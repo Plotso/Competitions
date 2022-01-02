@@ -52,6 +52,13 @@
             return competitions.Select(c => _mapper.Map<T>(c));
         }
 
+        public IEnumerable<T> GetAllBySportAndStatuses<T>(int sportId, params CompetitionStatus[] statuses)
+        {
+            var filters = statuses.Select(GetFilterByStatus);
+            var competitions = _competitionsRepository.All().AsEnumerable().Where(c => c.SportId == sportId && (filters.Any(f => f.Invoke(c))));
+            return competitions.Select(c => _mapper.Map<T>(c));
+        }
+
         public IEnumerable<T> GetAllByOrganiserAndStatus<T>(string organiserId, CompetitionStatus status)
         {
             var statusFilter = GetFilterByStatus(status);
