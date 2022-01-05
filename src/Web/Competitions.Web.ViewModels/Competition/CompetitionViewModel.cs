@@ -10,6 +10,8 @@
 
     public class CompetitionViewModel : IMapFrom<Competition>
     {
+        public int Id { get; set; }
+        
         public string Title { get; set; }
         
         public string Rules { get; set; }

@@ -1,0 +1,136 @@
+﻿@model Competitions.Web.ViewModels.Competition.CompetitionModifyInputModel
+@{
+    ViewData["Title"] = "Всички състезания, турнири и лиги";
+    ViewData["Keywords"] = "Състезания, Всички състезания, Турнири, Всички турнири, Лиги, Всички Лиги, Спорт";
+    ViewData["Description"] = "Всички турнири, лиги и други спортни състезания";
+}
+
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        relative_urls: false,
+        remove_script_host : false,
+        convert_urls : true,
+        plugins: [
+            "image paste table link code media fullscreen wordcount searchreplace lists"
+        ]
+    });
+</script>
+
+<div>
+    <form asp-action="Modify" id="comment-form" class="form justify-content-center">
+        <div>
+            <label asp-for="Competition.Title">Име на състезание</label>
+            <input asp-for="Competition.Title" class="form-control"/>
+            <span asp-validation-for="Competition.Title" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Competition.Rules">Правила</label>
+            <input asp-for="Competition.Rules" class="form-control" aria-describedby="rulesBlock"/>
+            <span asp-validation-for="Competition.Rules" class="text-danger"></span>
+            <small id="rulesBlock" class="form-text text-muted">
+                Общи правила при провеждането на състезанието. Не е задължително да се въвеждат такива, но е препоръчително.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.Location">Локация</label>
+            <input asp-for="Competition.Location" class="form-control" aria-describedby="locationBlock"/>
+            <span asp-validation-for="Competition.Location" class="text-danger"></span>
+            <small id="locationBlock" class="form-text text-muted">
+                Локацията, където ще се провежда състезанието. Може да е град или по-специфичен обект.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.Information">Информация</label>
+            <input asp-for="Competition.Information" class="form-control" aria-describedby="infoBlock"/>
+            <span asp-validation-for="Competition.Information" class="text-danger"></span>
+            <small id="infoBlock" class="form-text text-muted">
+                Допълнителна информация, която организаторът сметне за нужна. При недостатъчно информация за локацията в съответното поле се препоръчва да се добавят повече детайли в допълнителната информация.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.SportId"></label>
+            <select asp-for="Competition.SportId" 
+                            class="form-control" 
+                            asp-items="Model.Sports">
+                        <option>Спорт: </option>
+                    </select>
+            <span asp-validation-for="Competition.SportId" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Competition.IsTeamCompetition">Отборно състезание</label>
+            <input asp-for="Competition.IsTeamCompetition" class="form-control"/>
+            <span asp-validation-for="Competition.IsTeamCompetition" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Competition.Type"></label>
+            <select asp-for="Competition.TypeId" 
+                            class="form-control" 
+                            asp-items="Model.TypesBG">
+                        <option>Тип състезание: </option>
+                    </select>
+            <span asp-validation-for="Competition.TypeId" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Competition.EntryFee">Входна такса</label>
+            <input asp-for="Competition.EntryFee" class="form-control" aria-describedby="entryFeeBlock"/>
+            <span asp-validation-for="Competition.EntryFee" class="text-danger"></span>
+            <small id="entryFeeBlock" class="form-text text-muted">
+                Ако има такава, в противен случай, полето се оставя празно.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.WinningPrize">Награден фонд</label>
+            <input asp-for="Competition.WinningPrize" class="form-control" aria-describedby="winningPrizeBlock"/>
+            <span asp-validation-for="Competition.WinningPrize" class="text-danger"></span>
+            <small id="winningPrizeBlock" class="form-text text-muted">
+                Ако има такъв, в противен случай, полето се оставя празно.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.WinPoints">Точки за победа</label>
+            <input asp-for="Competition.WinPoints" class="form-control" aria-describedby="winBlock"/>
+            <span asp-validation-for="Competition.WinPoints" class="text-danger"></span>
+            <small id="winBlock" class="form-text text-muted">
+                Броят точки, които даден отбор или играч взима при победа. Ако не важи за конкретното събитие, полето се оставя празно.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.DrawPoints">Точки за равенство</label>
+            <input asp-for="Competition.DrawPoints" class="form-control" aria-describedby="drawBlock"/>
+            <span asp-validation-for="Competition.DrawPoints" class="text-danger"></span>
+            <small id="drawBlock" class="form-text text-muted">
+                Броят точки, които даден отбор или играч взима при равен резултат. Ако не важи за конкретното събитие, полето се оставя празно.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.CloseLosePoints">Точки за близка загуба</label>
+            <input asp-for="Competition.CloseLosePoints" class="form-control" aria-describedby="closeLoseBlock"/>
+            <span asp-validation-for="Competition.CloseLosePoints" class="text-danger"></span>
+            <small id="closeLoseBlock" class="form-text text-muted">
+                Броят точки, които даден отбор или играч взима при загуба с близък резултат. Такива има например във волейбола. Ако не важи за конкретното събитие, полето се оставя празно.
+            </small>
+        </div>
+        <div>
+            <label asp-for="Competition.Starting">Начало на състезанието</label>
+            <input asp-for="Competition.Starting" class="form-control"/>
+            <span asp-validation-for="Competition.Starting" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Competition.Ending">Край на състезанието</label>
+            <input asp-for="Competition.Ending" class="form-control" aria-describedby="endingBlock"/>
+            <span asp-validation-for="Competition.Ending" class="text-danger"></span>
+            <small id="endingBlock" class="form-text text-muted">
+                Трябва да бъде след началото на състезанието!
+            </small>
+        </div>
+        <button type="submit" class="btn btn-secondary comment-button">Промени</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

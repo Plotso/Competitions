@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Castle.Core.Internal;
+    using Common;
     using Data.Models;
     using Data.Models.Competition;
     using Domain.BL.Enums;
@@ -49,6 +50,15 @@
             return View(upcomingCompetitions.ToList());
         }
         
+        public async Task<IActionResult> ById(int id)
+        {
+            var competition = _competitionsService.GetById<CompetitionViewModel>(id);
+            if (competition == null)
+                return NotFound();
+
+            return View(competition);
+        }
+        
         public async Task<IActionResult> Upcoming()
         {
             var upcomingCompetitions =
@@ -87,8 +97,10 @@
                 : new[] { CompetitionStatus.Active, CompetitionStatus.Upcoming };
             var competitions =
                 _competitionsService.GetAllBySportAndStatuses<CompetitionViewModel>(sportId, statuses).ToList();
-            // ToDo: Return another view in case of no competitions
-            return View(competitions.ToList());
+            
+            return competitions.Any() ?
+                View(competitions.ToList()) :
+                View("NoCompetitions");
         }
 
         [Authorize]
@@ -130,6 +142,118 @@
                 _logger.LogError(e.Message, e);
                 return RedirectToAction("Error", "Home");
             }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Modify(int id)
+        {
+            var competition = _competitionsService.GetById<CompetitionInputModel>(id);
+            if (competition == null)
+                return NotFound();
+            
+            var isAuthorised = await IsOrganiserOrAdmin(competition.OrganiserId);
+            if (!isAuthorised)
+                return Unauthorized(); // ToDo: Change to Forbidden and add page for it
+            
+            var sports = _sportsService.GetAll<SportModifyInputModel>();
+            var viewModel = new CompetitionModifyInputModel
+            {
+                Id = id,
+                Sports = sports.Select(s => new SelectListItem($"{s.Name}", s.Id.ToString())).ToList(),
+                Competition = competition
+            };
+            return View(viewModel);
+
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Modify(CompetitionModifyInputModel inputModel)
+        {
+            if (!ModelState.IsValid || inputModel.Competition.SportId.IsNullOrEmpty() || inputModel.Competition.TypeId.IsNullOrEmpty())
+            {
+                return View(inputModel);
+            }
+
+            try
+            {
+                await _competitionsService.EditAsync(inputModel);
+                return RedirectToAction(nameof(ById), inputModel.Id);
+            }
+            catch (MissingSportException e)
+            {
+                var inputJson = JsonConvert.SerializeObject(inputModel, Formatting.Indented);
+                _logger.LogError("Couldn't update competition with id {competitionId} due to missing sport. Request: {newLine} {inputJson}", inputModel.Id, Environment.NewLine, inputJson);
+                return RedirectToAction("Error", "Home");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var competition = _competitionsService.GetById<CompetitionInputModel>(id);
+            if (competition == null)
+                return NotFound();
+            
+            var isAuthorised = await IsOrganiserOrAdmin(competition.OrganiserId);
+            if (!isAuthorised)
+                return Unauthorized(); // ToDo: Change to Forbidden and add page for it
+            
+            var viewModel = new CompetitionModifyInputModel
+            {
+                Id = id,
+                Competition = competition
+            };
+            return View(viewModel);
+
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(CompetitionModifyInputModel inputModel, string onSubmitAction)
+        {
+            if (onSubmitAction.IsNullOrEmpty() || onSubmitAction == "Откажи")
+            {
+                return RedirectToAction(nameof(All));
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+
+            try
+            {
+                await _competitionsService.DeleteAsync(inputModel.Id);
+                //ToDo: Delete also related reservations, competitionParticipants & so on
+                return RedirectToAction(nameof(All));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        private async Task<bool> IsOrganiserOrAdmin(string competitionOrganiserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var organiserId = _customersService.GetOrganiserId(currentUser.Id);
+            return organiserId == competitionOrganiserId || await IsAdmin();
+        }
+
+        private async Task<bool> IsAdmin()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            return userRoles.Any(r => r == GlobalConstants.AdministratorRoleName);
         }
     }
 }

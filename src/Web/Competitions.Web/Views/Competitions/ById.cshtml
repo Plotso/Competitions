@@ -1,0 +1,11 @@
+﻿@model Competitions.Web.ViewModels.Competition.CompetitionViewModel
+
+@{
+    ViewData["Title"] = @Model.Title;
+    ViewData["Keywords"] = "Състезания, Всички състезания, Турнири, Всички турнири, Лиги, Всички Лиги, Спорт";
+    ViewData["Description"] = $"Състезание - {@Model.Title}";
+}
+
+<div>
+    <h1 class="text-center">@Model.Title</h1>
+</div>

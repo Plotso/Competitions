@@ -1,8 +1,8 @@
 ﻿@model Competitions.Web.ViewModels.Competition.CompetitionCreateInputModel
 @{
-    ViewData["Title"] = "Всички състезания, турнири и лиги";
-    ViewData["Keywords"] = "Състезания, Всички състезания, Турнири, Всички турнири, Лиги, Всички Лиги, Спорт";
-    ViewData["Description"] = "Всички турнири, лиги и други спортни състезания";
+    ViewData["Title"] = "Създаване на състезание";
+    ViewData["Keywords"] = "Състезание, Турнир, Създаване, Лига";
+    ViewData["Description"] = "Създаване на турнир, лига или друг вид състезание";
 }
 
 <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
@@ -128,5 +128,9 @@
             <button type="submit" class="btn btn-secondary comment-button">Създай</button>
         </form>
     </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 
 

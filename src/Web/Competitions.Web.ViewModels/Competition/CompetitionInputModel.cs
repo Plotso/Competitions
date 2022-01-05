@@ -49,6 +49,8 @@
         [Required]
         public string SportId { get; set; }
         
+        public string OrganiserId { get; set; }
+        
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (Ending <= Starting)

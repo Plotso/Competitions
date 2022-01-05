@@ -1,0 +1,18 @@
+﻿@model List<Competitions.Web.ViewModels.Competition.CompetitionViewModel>
+@{
+    var firstCompetition = Model.FirstOrDefault();
+    var sport = firstCompetition?.Sport.Name ?? string.Empty;
+    var isFinished = firstCompetition?.Ending >= DateTime.UtcNow;
+    var type = isFinished ? "Приключили" : "Активни и Предстоящи";
+    ViewData["Title"] = @type + " Състезания, турнири и лиги" + (sport == string.Empty ? string.Empty : $" - {sport}");
+    ViewData["Keywords"] = $"Състезания, Турнири, Лиги, {type}, {sport}";
+    ViewData["Description"] = $"{type} турнири, лиги и други спортни състезания";
+}
+
+<div>
+    <h1 class="text-center">В момента няма налични състезание по избрания критерии</h1>
+    
+    <a class="btn btn-primary" asp-controller="Home" asp-action="Index" role="button">Обратно към начална страница</a>
+</div>
+
+
