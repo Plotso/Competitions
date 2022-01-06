@@ -34,6 +34,8 @@
         
         public string Location { get; set; }
         
+        public int MaxNumberOfParticipants { get; set; }
+        
         public DateTime Starting { get; set; }
         
         public DateTime Ending { get; set; }

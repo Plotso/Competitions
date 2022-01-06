@@ -47,6 +47,11 @@
             <span asp-validation-for="Competition.SportId" class="text-danger"></span>
         </div>
         <div>
+            <label asp-for="Competition.MaxNumberOfParticipants">Максимален брой участници</label>
+            <input asp-for="Competition.MaxNumberOfParticipants" class="form-control" readonly/>
+            <span asp-validation-for="Competition.MaxNumberOfParticipants" class="text-danger"></span>
+        </div>
+        <div>
             <label asp-for="Competition.IsTeamCompetition">Отборно състезание</label>
             <input asp-for="Competition.IsTeamCompetition" class="form-control" readonly/>
             <span asp-validation-for="Competition.IsTeamCompetition" class="text-danger"></span>

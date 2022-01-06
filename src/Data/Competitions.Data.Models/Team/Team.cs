@@ -8,7 +8,7 @@
     {
         public string Name { get; set; }
         
-        public virtual ICollection<TeamParticipant> Teams { get; set; }
+        public virtual ICollection<TeamParticipant> Participants { get; set; }
         
         public virtual ICollection<CompetitionParticipant> Competitions { get; set; }
     }

@@ -19,8 +19,10 @@ namespace Competitions.Data.Models.Competition
         public int? TeamId { get; set; }
         
         public virtual Team Team { get; set; }
+        
+        public double? Points { get; set; }
 
-        public virtual ICollection<Score> Scores { get; set; }
+        public virtual ICollection<Match> Matches { get; set; }
         
         public virtual ICollection<ParticipantRating> Ratings { get; set; }
     }

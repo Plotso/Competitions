@@ -38,6 +38,7 @@
         public DbSet<Sport> Sports { get; set; }
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<CompetitionParticipant> CompetitionParticipants { get; set; }
+        public DbSet<Match> Matches { get; set; }
         public DbSet<Score> Scores { get; set; }
         
         public DbSet<ParticipantRating> ParticipantRatings { get; set; }

@@ -46,6 +46,9 @@
         [MinLength(2)]
         public string Location { get; set; }
         
+        [Range(1, int.MaxValue)]
+        public int MaxNumberOfParticipants { get; set; }
+        
         [Required]
         public string SportId { get; set; }
         

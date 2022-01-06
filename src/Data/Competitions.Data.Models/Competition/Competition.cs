@@ -38,6 +38,9 @@
         [Required]
         public string Location { get; set; }
         
+        [Range(1, int.MaxValue)]
+        public int MaxNumberOfParticipants { get; set; }
+        
         [Required]
         public int SportId { get; set; }
         
@@ -49,6 +52,8 @@
         public virtual Organiser Organiser { get; set; }
 
         public virtual ICollection<CompetitionParticipant> Participants { get; set; }
+        
+        public virtual ICollection<Match> Matches { get; set; }
         
         public virtual ICollection<Reservation> Reservations { get; set; }
         
