@@ -87,5 +87,46 @@ namespace Competitions.Domain.BL.Services
 
             return organiser.Id;
         }
+
+        public string GetParticipantId(string applicationUserId)
+        {
+            var user = _usersRepository.All().FirstOrDefault(u => u.Id == applicationUserId);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+            var customer = _customersRepository.All().FirstOrDefault(c => c.ApplicationUserId == applicationUserId);
+            if (customer == null)
+            {
+                _logger.LogCritical("No customer mapped to User: {applicationUserId}", applicationUserId);
+                throw new ArgumentException("No customer is mapped to the respective user");
+            }
+
+            var participant = _participantsRepository.All().FirstOrDefault(o => o.CustomerId == customer.Id);
+            if (participant == null)
+            {
+                _logger.LogCritical("No participant mapped to Customer: {customerId}", customer.Id);
+                throw new ArgumentException("No participant profile is mapped to the respective customer");
+            }
+
+            return participant.Id;
+        }
+
+        public string GetCustomerId(string applicationUserId)
+        {
+            var user = _usersRepository.All().FirstOrDefault(u => u.Id == applicationUserId);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+            var customer = _customersRepository.All().FirstOrDefault(c => c.ApplicationUserId == applicationUserId);
+            if (customer == null)
+            {
+                _logger.LogCritical("No customer mapped to User: {applicationUserId}", applicationUserId);
+                throw new ArgumentException("No customer is mapped to the respective user");
+            }
+
+            return customer.Id;
+        }
     }
 }

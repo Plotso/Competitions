@@ -18,6 +18,7 @@
                 serviceCollection.RegisterMapper(typeof(SportViewModel).GetTypeInfo().Assembly, typeof(Sport).GetTypeInfo().Assembly)
                     .AddTransient<ICustomersService, CustomersService>()
                     .AddTransient<ISportsService, SportsService>()
+                    .AddTransient<ITeamsService, TeamsService>()
                     .AddTransient<ICompetitionsService, CompetitionsService>();
         }
     }

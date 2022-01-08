@@ -1,0 +1,36 @@
+﻿@model Competitions.Web.ViewModels.Team.TeamInputModel
+@{
+    ViewData["Title"] = "Създаване на отбор";
+    ViewData["Keywords"] = "Състезание, Турнир, Създаване, Лига, Отбор";
+    ViewData["Description"] = "Създаване на отбор";
+}
+
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        relative_urls: false,
+        remove_script_host : false,
+        convert_urls : true,
+        plugins: [
+            "image paste table link code media fullscreen wordcount searchreplace lists"
+        ]
+    });
+</script>
+
+<div>
+        <form asp-action="Create" id="comment-form" class="form justify-content-center">
+            <div>
+                <label asp-for="Name">Име на отбор</label>
+                <input asp-for="Name" class="form-control"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-secondary comment-button">Създай</button>
+        </form>
+    </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

@@ -7,5 +7,9 @@ namespace Competitions.Domain.BL.Services.Interfaces
         Task CreateInternalCustomer(string applicationUserId);
 
         string GetOrganiserId(string applicationUserId);
+
+        string GetParticipantId(string applicationUserId);
+
+        string GetCustomerId(string applicationUserId);
     }
 }

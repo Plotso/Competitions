@@ -24,6 +24,10 @@
 
         IEnumerable<T> GetAllByTypeAndStatus<T>(CompetitionType type, CompetitionStatus status);
 
+        Task SignParticipant(int competitionId, string participantId, int? teamId = null);
+        
+        Task UnSignParticipant(int competitionId, string participantId, int? teamId = null);
+
         Task CreateAsync(CompetitionCreateInputModel inputModel, string organiserId);
 
         Task EditAsync(CompetitionModifyInputModel inputModel);
