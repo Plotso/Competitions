@@ -45,5 +45,7 @@
         public OrganiserViewModel Organiser { get; set; }
         
         public ICollection<CompetitionRatingViewModel> Ratings { get; set; }
+        public ICollection<CompetitionParticipantViewModel> Participants { get; set; }
+        public ICollection<MatchViewModel> Matches { get; set; }
     }
 }

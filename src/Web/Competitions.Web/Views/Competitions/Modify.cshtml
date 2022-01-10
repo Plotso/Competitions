@@ -130,7 +130,10 @@
                 Трябва да бъде след началото на състезанието!
             </small>
         </div>
-        <button type="submit" class="btn btn-secondary comment-button">Промени</button>
+        <div class="center-group">
+            <button type="submit" class="btn btn-secondary" asp-action="ById" asp-route-id="@Model.Id">Откажи</button>
+            <button type="submit" class="btn btn-secondary create-record-btn">Промени</button>
+        </div>
     </form>
 </div>
 

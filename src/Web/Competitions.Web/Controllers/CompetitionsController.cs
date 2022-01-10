@@ -153,7 +153,7 @@
             
             var isAuthorised = await IsOrganiserOrAdmin(competition.OrganiserId);
             if (!isAuthorised)
-                return Unauthorized(); // ToDo: Change to Forbidden and add page for it
+                return Forbid();
             
             var sports = _sportsService.GetAll<SportModifyInputModel>();
             var viewModel = new CompetitionModifyInputModel
@@ -203,7 +203,7 @@
             
             var isAuthorised = await IsOrganiserOrAdmin(competition.OrganiserId);
             if (!isAuthorised)
-                return Unauthorized(); // ToDo: Change to Forbidden and add page for it
+                return Forbid();
             
             var viewModel = new CompetitionModifyInputModel
             {

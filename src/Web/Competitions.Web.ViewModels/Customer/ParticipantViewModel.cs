@@ -8,7 +8,5 @@
     public class ParticipantViewModel : IMapFrom<Participant>
     {
         public CustomerViewModel Customer { get; set; }
-        
-        public ICollection<ParticipantRatingViewModel> Ratings { get; set; }
     }
 }

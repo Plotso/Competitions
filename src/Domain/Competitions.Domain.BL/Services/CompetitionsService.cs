@@ -186,6 +186,7 @@
                 Rules = competitionUpdate.Rules,
                 Location = competitionUpdate.Location,
                 Organiser = organiser,
+                MaxNumberOfParticipants = inputModel.Competition.MaxNumberOfParticipants,
                 //Type = (CompetitionType)((int)competitionUpdate.Type)
                 Type = (CompetitionType)(int.Parse(competitionUpdate.TypeId))
             };
@@ -207,33 +208,34 @@
         public async Task EditAsync(CompetitionModifyInputModel inputModel)
         {
             var competition = GetById(inputModel.Id);
-            if (competition != null)
+            if (competition == null)
+                throw new ArgumentException(
+                    $"Edit competition failed. Competition with ID: {inputModel.Id} couldn't be found in the database");
+            
+            var competitionUpdate = inputModel.Competition;
+            competition.Starting = competitionUpdate.Starting;
+            competition.Ending = competitionUpdate.Ending;
+            competition.EntryFee = competitionUpdate.EntryFee;
+            competition.WinningPrize = competitionUpdate.WinningPrize;
+            competition.WinPoints = competitionUpdate.WinPoints;
+            competition.DrawPoints = competitionUpdate.DrawPoints;
+            competition.CloseLosePoints = competitionUpdate.CloseLosePoints;
+            competition.IsTeamCompetition = competitionUpdate.IsTeamCompetition;
+            competition.Title = competitionUpdate.Title;
+            competition.Information = competitionUpdate.Information;
+            competition.Rules = competitionUpdate.Rules;
+            competition.MaxNumberOfParticipants = competitionUpdate.MaxNumberOfParticipants;
+            competition.Type = (CompetitionType)((int)competitionUpdate.Type);
+
+            var sportId = int.Parse(inputModel.Competition.SportId);
+            var sport = _sportsRepository.All().FirstOrDefault(s => s.Id == sportId);
+            if (sport != null)
             {
-                var competitionUpdate = inputModel.Competition;
-                competition.Starting = competitionUpdate.Starting;
-                competition.Ending = competitionUpdate.Ending;
-                competition.EntryFee = competitionUpdate.EntryFee;
-                competition.WinningPrize = competitionUpdate.WinningPrize;
-                competition.WinPoints = competitionUpdate.WinPoints;
-                competition.DrawPoints = competitionUpdate.DrawPoints;
-                competition.CloseLosePoints = competitionUpdate.CloseLosePoints;
-                competition.IsTeamCompetition = competitionUpdate.IsTeamCompetition;
-                competition.Title = competitionUpdate.Title;
-                competition.Information = competitionUpdate.Information;
-                competition.Rules = competitionUpdate.Rules;
-                competition.Type = (CompetitionType)((int)competitionUpdate.Type);
-
-                var sportId = int.Parse(inputModel.Competition.SportId);
-                var sport = _sportsRepository.All().FirstOrDefault(s => s.Id == sportId);
-                if (sport != null)
-                {
-                    competition.Sport = sport;
-                }
-
-                _competitionsRepository.Update(competition);
-                await _competitionsRepository.SaveChangesAsync();
+                competition.Sport = sport;
             }
-            throw new ArgumentException($"Edit competition failed. Competition with ID: {inputModel.Id} couldn't be found in the database");
+
+            _competitionsRepository.Update(competition);
+            await _competitionsRepository.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)

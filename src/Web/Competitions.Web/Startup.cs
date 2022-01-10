@@ -71,7 +71,12 @@ namespace Competitions.Web
             app.Use(async (context, next) =>
             {
                 await next();
-                if (context.Response.StatusCode == 404)
+                if (context.Response.StatusCode == 403)
+                {
+                    context.Request.Path = "/Home/Forbidden";
+                    await next();
+                }
+                else if (context.Response.StatusCode == 404)
                 {
                     context.Request.Path = "/Home/PageNotFound";
                     await next();

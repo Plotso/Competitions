@@ -32,15 +32,14 @@
         public async Task EditAsync(TeamModifyInputModel inputModel)
         {
             var team = await GetById(inputModel.Id);
-            if (team != null)
-            {
-                team.Name = inputModel.Team.Name;
+            if (team == null)
+                throw new ArgumentException($"Edit team failed. Team with ID: {inputModel.Id} couldn't be found in the database");
+            
+            team.Name = inputModel.Team.Name;
                 
-                _teamsRepository.Update(team);
-                await _teamsRepository.SaveChangesAsync();
-            }
+            _teamsRepository.Update(team);
+            await _teamsRepository.SaveChangesAsync();
 
-            throw new ArgumentException($"Edit team failed. Team with ID: {inputModel.Id} couldn't be found in the database");
         }
 
         public async Task DeleteAsync(int teamId)

@@ -1,11 +1,56 @@
-﻿@model Competitions.Web.ViewModels.Competition.CompetitionViewModel
+﻿@using Competitions.Data.Models
+@using Competitions.Domain.BL.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using Competitions.Common
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject ICustomersService _customersService
+@model Competitions.Web.ViewModels.Competition.CompetitionViewModel
 
 @{
     ViewData["Title"] = @Model.Title;
     ViewData["Keywords"] = "Състезания, Всички състезания, Турнири, Всички турнири, Лиги, Всички Лиги, Спорт";
     ViewData["Description"] = $"Състезание - {@Model.Title}";
+    
+    bool IsOrganiserOrAdmin(string competitionOrganiserId)
+    {
+        var currentUser = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+        var organiserId = _customersService.GetOrganiserId(currentUser.Id);
+        return organiserId == competitionOrganiserId || IsAdmin();
+    }
+    
+    bool IsAdmin()
+    {
+        var user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+        var userRoles = UserManager.GetRolesAsync(user).GetAwaiter().GetResult();
+        return userRoles.Any(r => r == GlobalConstants.AdministratorRoleName);
+    }
 }
 
 <div>
-    <h1 class="text-center">@Model.Title</h1>
+    <h1 class="text-center">
+        @Model.Title
+        
+        @if (SignInManager.IsSignedIn(User) && IsOrganiserOrAdmin(@Model.Organiser.Id))
+        {
+            <a class="page-link-green" asp-controller="Competitions" asp-action="Modify" asp-route-id="@Model.Id" title="Промени състезанието">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </a>
+            <a class="page-link-red" asp-controller="Competitions" asp-action="Delete" asp-route-id="@Model.Id" title="Изтрий състезанието">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </a>
+        }
+    </h1>
+    <div>
+        <div>
+            <h4>Локация:</h4>
+            @Model.Location
+            <h4>Правила:</h4>
+            @Model.Rules
+            <h4>Допълнителна информация:</h4>
+            @Model.Information
+        </div>
+        <div><h4>Максимален брой участници:</h4> @Model.MaxNumberOfParticipants</div>
+        <div><h4>Запиисани участници:</h4> @Model.Participants.Count</div>
+    </div>
 </div>
