@@ -19,11 +19,13 @@
     using Newtonsoft.Json;
     using ViewModels.Competition;
     using ViewModels.Sport;
+    using ViewModels.Team;
 
     public class CompetitionsController : Controller
     {
         private readonly ICompetitionsService _competitionsService;
         private readonly ISportsService _sportsService;
+        private readonly ITeamsService _teamsService;
         private readonly ICustomersService _customersService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<CompetitionsController> _logger;
@@ -31,12 +33,14 @@
         public CompetitionsController(
             ICompetitionsService competitionsService,
             ISportsService sportsService,
+            ITeamsService teamsService,
             ICustomersService customersService,
             UserManager<ApplicationUser> userManager,
             ILogger<CompetitionsController> logger)
         {
             _competitionsService = competitionsService;
             _sportsService = sportsService;
+            _teamsService = teamsService;
             _customersService = customersService;
             _userManager = userManager;
             _logger = logger;
@@ -101,6 +105,87 @@
             return competitions.Any() ?
                 View(competitions.ToList()) :
                 View("NoCompetitions");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> InitiateSignIn(int competitionId, bool isTeamCompetition)
+        {
+            try
+            {
+                var participantId = await GetUserParticipantId();
+                var isAlreadySignedIn = _competitionsService.IsParticipantAlreadySignedIn(competitionId, participantId);
+                if (!isAlreadySignedIn)
+                {
+                    if (isTeamCompetition)
+                    {
+                        var participantTeams = _teamsService.GetAllByParticipantId<TeamViewModel>(participantId).ToList();
+                        if (!participantTeams.Any())
+                        {
+                            return RedirectToAction("Create", "Teams");
+                        }
+
+                        if (participantTeams.Count > 1)
+                        {
+                            var selectTeamViewModel = new SelectTeamViewModel
+                            {
+                                CompetitionId = competitionId,
+                                ActualTeams = participantTeams,
+                                Teams = participantTeams.Select(t => new SelectListItem($"{t.Name}", t.Name)).ToList()
+                            };
+
+                            return View("SelectTeam", selectTeamViewModel);
+                        }
+
+                        await _competitionsService.SignParticipant(competitionId, participantId, participantTeams.First().Id);
+                    }
+                    else
+                    {
+                        await _competitionsService.SignParticipant(competitionId, participantId);
+                    }
+                }
+
+                return RedirectToAction(nameof(ById), competitionId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SelectTeam(SelectTeamViewModel model)
+        {
+            if (!ModelState.IsValid || model.SelectedTeamName.IsNullOrEmpty())
+            {
+                return View(model);
+            }
+
+            try
+            {
+                if (model.Teams.Any())
+                {
+                    _logger.LogWarning("SelectTeam post request has been sent without teams inside. Please validate!");
+                    return RedirectToAction("Error", "Home");
+                }
+                
+                var team = model.ActualTeams.FirstOrDefault(t => t.Name == model.SelectedTeamName);
+                if (team == null)
+                {
+                    throw new ArgumentException("Selected team isn't a valid one!");
+                }
+                
+                var participantId = await GetUserParticipantId();
+                await _competitionsService.SignParticipant(model.CompetitionId, participantId, team.Id);
+                return RedirectToAction(nameof(ById), model.CompetitionId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message, e);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [Authorize]
@@ -240,6 +325,12 @@
                 _logger.LogError(e.Message, e);
                 return RedirectToAction("Error", "Home");
             }
+        }
+
+        private async Task<string> GetUserParticipantId()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            return _customersService.GetParticipantId(currentUser.Id);
         }
 
         private async Task<bool> IsOrganiserOrAdmin(string competitionOrganiserId)

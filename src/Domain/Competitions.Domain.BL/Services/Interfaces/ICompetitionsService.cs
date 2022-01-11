@@ -24,6 +24,8 @@
 
         IEnumerable<T> GetAllByTypeAndStatus<T>(CompetitionType type, CompetitionStatus status);
 
+        bool IsParticipantAlreadySignedIn(int competitionId, string participantId);
+
         Task SignParticipant(int competitionId, string participantId, int? teamId = null);
         
         Task UnSignParticipant(int competitionId, string participantId, int? teamId = null);

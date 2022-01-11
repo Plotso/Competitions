@@ -4,6 +4,7 @@
     using Common.Models.Interfaces;
     using Microsoft.EntityFrameworkCore;
     using Models.Customer;
+    using Models.Team;
 
     internal static class EntityIndexesConfiguration
     {
@@ -16,6 +17,14 @@
                 modelBuilder
                     .Entity(entity.ClrType)
                     .HasIndex(nameof(Customer.ApplicationUserId))
+                    .IsUnique();
+            }
+            var teamEntities = modelBuilder.Model.GetEntityTypes().Where(e => e.ClrType != null && typeof(Team).IsAssignableFrom(e.ClrType));
+            foreach (var entity in teamEntities)
+            {
+                modelBuilder
+                    .Entity(entity.ClrType)
+                    .HasIndex(nameof(Team.Name))
                     .IsUnique();
             }
             

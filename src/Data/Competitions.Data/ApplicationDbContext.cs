@@ -10,6 +10,7 @@
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using Models;
+    using Models.Administration;
     using Models.Competition;
     using Models.Customer;
     using Models.Partner;
@@ -53,6 +54,8 @@
         public DbSet<Referee> Referees { get; set; }
         
         public DbSet<Reservation> Reservations { get; set; }
+        
+        public DbSet<AdministrationConfiguration> AdministrationConfigurations { get; set; }
 
         public override int SaveChanges() => SaveChanges(true);
 

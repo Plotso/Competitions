@@ -1,0 +1,40 @@
+﻿@model Competitions.Web.ViewModels.Team.SelectTeamViewModel
+@{
+    ViewData["Title"] = "Избиране на отбор";
+    ViewData["Keywords"] = "Състезание, Турнир, Създаване, Лига, Отбор";
+    ViewData["Description"] = "Избиране на отбор за участие в състезание";
+}
+
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        relative_urls: false,
+        remove_script_host : false,
+        convert_urls : true,
+        plugins: [
+            "image paste table link code media fullscreen wordcount searchreplace lists"
+        ]
+    });
+</script>
+
+<div>
+        <form asp asp-controller="Competitions" asp-action="SelectTeam" id="comment-form" class="form justify-content-center" method="post">
+            <div>
+                <label asp-for="SelectedTeamName"></label>
+                <select asp-for="SelectedTeamName" 
+                                class="form-control" 
+                                asp-items="Model.Teams">
+                            <option>Отбор: </option>
+                        </select>
+                <span asp-validation-for="SelectedTeamName" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-secondary create-record-btn">Потвърди избор</button>
+        </form>
+    </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

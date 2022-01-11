@@ -50,6 +50,8 @@
         public string OrganiserId { get; set; }
         
         public virtual Organiser Organiser { get; set; }
+        
+        public string WinnerCompetitionParticipantId { get; set; }
 
         public virtual ICollection<CompetitionParticipant> Participants { get; set; }
         

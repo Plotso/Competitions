@@ -83,11 +83,24 @@
             return competitions.To<T>();
         }
 
+        public bool IsParticipantAlreadySignedIn(int competitionId, string participantId)
+        {
+            var competition = GetById(competitionId);
+            if (competition == null)
+                throw new ArgumentException($"Couldn't find desire Competition with ID: {competitionId}");
+
+            return competition.Participants.Any(p => p.ParticipantId == participantId) ||
+                   IsParticipantRegisteredWithAnyTeam(competition, participantId);
+        }
+
         public async Task SignParticipant(int competitionId, string participantId, int? teamId = null)
         {
             var competition = GetById(competitionId);
             if (competition == null)
                 throw new ArgumentException($"Couldn't find desire Competition with ID: {competitionId}");
+            if (competition.Participants.Any(p => p.ParticipantId == participantId) || IsParticipantRegisteredWithAnyTeam(competition, participantId))
+                throw new InvalidOperationException("Participant is already registered for the tournament, either individually or in a team");
+            
             var participant = _participantsRepository.All().FirstOrDefault(p => p.Id == participantId);
             if (participant == null)
                 throw new ArgumentException($"Competition participation failed due to missing participant from database. Provided id: {participantId}");
@@ -247,6 +260,11 @@
                 await _competitionsRepository.SaveChangesAsync();
             }
         }
+
+        private static bool IsParticipantRegisteredWithAnyTeam(Competition competition, string participantId)
+            => competition.IsTeamCompetition &&
+               competition.Participants.Any(p =>
+                   p.TeamId.HasValue && p.Team.Participants.Any(p => p.ParticipantId == participantId));
 
 
         private Func<Competition, bool> GetFilterByStatus(CompetitionStatus status) => status switch

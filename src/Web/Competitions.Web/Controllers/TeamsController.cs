@@ -53,7 +53,7 @@
                 var currentUser = await _userManager.GetUserAsync(User);
                 var customerId = _customersService.GetCustomerId(currentUser.Id);
                 var teamId = await _teamsService.CreateAsync(inputModel, customerId);
-                return RedirectToAction(nameof(ById), teamId);
+                return RedirectToAction(nameof(ById), new {id = teamId});
             }
             catch (Exception e)
             {

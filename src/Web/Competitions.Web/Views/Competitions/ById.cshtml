@@ -25,6 +25,8 @@
         var userRoles = UserManager.GetRolesAsync(user).GetAwaiter().GetResult();
         return userRoles.Any(r => r == GlobalConstants.AdministratorRoleName);
     }
+
+    var signInButtonLabel = @Model.IsTeamCompetition ? "Запиши отбор за участие" : "Запиши се за участие";
 }
 
 <div>
@@ -52,5 +54,10 @@
         </div>
         <div><h4>Максимален брой участници:</h4> @Model.MaxNumberOfParticipants</div>
         <div><h4>Запиисани участници:</h4> @Model.Participants.Count</div>
+        <button type="button" class="btn btn-light">
+            <a class="page-link-with-hover" asp-controller="Competitions" asp-action="InitiateSignIn" asp-route-competitionId="@Model.Id" asp-route-isTeamCompetition="@Model.IsTeamCompetition" title="Запиши се за участие">
+                @signInButtonLabel
+            </a>
+        </button>
     </div>
 </div>

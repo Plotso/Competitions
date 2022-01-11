@@ -11,7 +11,7 @@ namespace Competitions.Data.Models.Team
         
         public virtual Participant Participant { get; set; }
         
-        public int? TeamId { get; set; }
+        public int TeamId { get; set; }
         
         public virtual Team Team { get; set; }
     }
