@@ -19,19 +19,22 @@
 </script>
 
 <div>
-        <form asp asp-controller="Competitions" asp-action="SelectTeam" id="comment-form" class="form justify-content-center" method="post">
-            <div>
-                <label asp-for="SelectedTeamName"></label>
-                <select asp-for="SelectedTeamName" 
-                                class="form-control" 
-                                asp-items="Model.Teams">
-                            <option>Отбор: </option>
-                        </select>
-                <span asp-validation-for="SelectedTeamName" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-secondary create-record-btn">Потвърди избор</button>
-        </form>
-    </div>
+    <form asp-controller="Competitions" asp-action="SelectTeam" id="comment-form" class="form justify-content-center" method="post">
+        <div>
+            <label asp-for="SelectedTeamId"></label>
+            <select asp-for="SelectedTeamId" 
+                            class="form-control" 
+                            asp-items="Model.Teams">
+                        <option>Отбор: </option>
+                    </select>
+            <span asp-validation-for="SelectedTeamId" class="text-danger"></span>
+        </div>
+        <div>
+            <input asp-for="CompetitionId" class="form-control" type="hidden"/>
+        </div>
+        <button type="submit" class="btn btn-secondary create-record-btn">Потвърди избор</button>
+    </form>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -129,8 +129,7 @@
                             var selectTeamViewModel = new SelectTeamViewModel
                             {
                                 CompetitionId = competitionId,
-                                ActualTeams = participantTeams,
-                                Teams = participantTeams.Select(t => new SelectListItem($"{t.Name}", t.Name)).ToList()
+                                Teams = participantTeams.Select(t => new SelectListItem($"{t.Name}", t.Id.ToString())).ToList()
                             };
 
                             return View("SelectTeam", selectTeamViewModel);
@@ -144,7 +143,7 @@
                     }
                 }
 
-                return RedirectToAction(nameof(ById), competitionId);
+                return RedirectToAction(nameof(ById), new {id = competitionId});
             }
             catch (Exception e)
             {
@@ -158,28 +157,21 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SelectTeam(SelectTeamViewModel model)
         {
-            if (!ModelState.IsValid || model.SelectedTeamName.IsNullOrEmpty())
+            if (!ModelState.IsValid || model.SelectedTeamId.IsNullOrEmpty())
             {
                 return View(model);
             }
 
             try
             {
-                if (model.Teams.Any())
+                if (!int.TryParse(model.SelectedTeamId, out var teamId))
                 {
-                    _logger.LogWarning("SelectTeam post request has been sent without teams inside. Please validate!");
-                    return RedirectToAction("Error", "Home");
+                    throw new InvalidOperationException(
+                        $"Provided team id {model.SelectedTeamId} could not be cast to an integer");
                 }
-                
-                var team = model.ActualTeams.FirstOrDefault(t => t.Name == model.SelectedTeamName);
-                if (team == null)
-                {
-                    throw new ArgumentException("Selected team isn't a valid one!");
-                }
-                
                 var participantId = await GetUserParticipantId();
-                await _competitionsService.SignParticipant(model.CompetitionId, participantId, team.Id);
-                return RedirectToAction(nameof(ById), model.CompetitionId);
+                await _competitionsService.SignParticipant(model.CompetitionId, participantId, teamId);
+                return RedirectToAction(nameof(ById), new {id = model.CompetitionId});
             }
             catch (Exception e)
             {
@@ -238,7 +230,7 @@
             
             var isAuthorised = await IsOrganiserOrAdmin(competition.OrganiserId);
             if (!isAuthorised)
-                return Forbid();
+                return RedirectToAction("Forbidden", "Home");
             
             var sports = _sportsService.GetAll<SportModifyInputModel>();
             var viewModel = new CompetitionModifyInputModel
@@ -264,7 +256,7 @@
             try
             {
                 await _competitionsService.EditAsync(inputModel);
-                return RedirectToAction(nameof(ById), inputModel.Id);
+                return RedirectToAction(nameof(ById), new { id = inputModel.Id});
             }
             catch (MissingSportException e)
             {
@@ -288,7 +280,7 @@
             
             var isAuthorised = await IsOrganiserOrAdmin(competition.OrganiserId);
             if (!isAuthorised)
-                return Forbid();
+                return RedirectToAction("Forbidden", "Home");
             
             var viewModel = new CompetitionModifyInputModel
             {

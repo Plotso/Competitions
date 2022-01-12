@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+
+@{
+    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+    var showBanner = !consentFeature?.CanTrack ?? false;
+    var cookieString = consentFeature?.CreateConsentCookie();
+}
+
+@if (showBanner)
+{
+    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
+        Бисквитки:
+        <br/>
+        Ние съхраняваме и/или имаме достъп до информация свързаана с устройство, като уникални ID номера в бисквитки с цел обработване на лични данни. Можете да приемете или управлявате своите предпочитания по всяко време на страницата с настройки за поверителност.
+        <br/>
+        (A) Кои сме ние?
+        <br/>
+        Ние сме платформа за свободно организиране на спортни мероприятия достъпно за всякакви хора. Всеки потребител може спокойно да създаде състезание или да се включи в такова. Платформата може да се опише и като социална платформа, създаваща контакти между различни хора с желание за спорт.
+        <br/>
+        (B) За кого важи тази полица:
+        <ul>
+            <li><em>Посетители на уебсайта</em></li>
+            <li><em>Регистрирани потребители</em></li>
+            <li><em>Хора, желаещи да отправят въпроси към нас</em></li>
+        </ul>
+        <a asp-action="Privacy">Научи повече</a>.
+        <br>
+        <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
+            <span aria-hidden="true">Приемам</span>
+        </button>
+    </div>
+    <script>
+        (function () {
+            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+            button.addEventListener("click", function (event) {
+                document.cookie = button.dataset.cookieString;
+            }, false);
+        })();
+    </script>
+}

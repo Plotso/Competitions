@@ -2,6 +2,7 @@
 @using Competitions.Domain.BL.Services.Interfaces
 @using Microsoft.AspNetCore.Identity
 @using Competitions.Common
+@using Competitions.Web.ViewModels.Competition
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject ICustomersService _customersService
@@ -11,6 +12,11 @@
     ViewData["Title"] = @Model.Title;
     ViewData["Keywords"] = "Състезания, Всички състезания, Турнири, Всички турнири, Лиги, Всички Лиги, Спорт";
     ViewData["Description"] = $"Състезание - {@Model.Title}";
+
+    var type = @Model.Type == CompetitionTypeViewModel.Tournament ? 
+        "Турнир" :
+        @Model.Type == CompetitionTypeViewModel.League ? "Лига" : "Друг";
+    
     
     bool IsOrganiserOrAdmin(string competitionOrganiserId)
     {
@@ -29,35 +35,154 @@
     var signInButtonLabel = @Model.IsTeamCompetition ? "Запиши отбор за участие" : "Запиши се за участие";
 }
 
-<div>
-    <h1 class="text-center">
-        @Model.Title
-        
-        @if (SignInManager.IsSignedIn(User) && IsOrganiserOrAdmin(@Model.Organiser.Id))
-        {
-            <a class="page-link-green" asp-controller="Competitions" asp-action="Modify" asp-route-id="@Model.Id" title="Промени състезанието">
-                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-            </a>
-            <a class="page-link-red" asp-controller="Competitions" asp-action="Delete" asp-route-id="@Model.Id" title="Изтрий състезанието">
-                <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </a>
-        }
-    </h1>
-    <div>
-        <div>
-            <h4>Локация:</h4>
-            @Model.Location
-            <h4>Правила:</h4>
-            @Model.Rules
-            <h4>Допълнителна информация:</h4>
-            @Model.Information
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">
+                @Model.Title
+                    
+                @if (SignInManager.IsSignedIn(User) && IsOrganiserOrAdmin(@Model.Organiser.Id))
+                {
+                    <a class="page-link-green" asp-controller="Competitions" asp-action="Modify" asp-route-id="@Model.Id" title="Промени състезанието">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                    <a class="page-link-red" asp-controller="Competitions" asp-action="Delete" asp-route-id="@Model.Id" title="Изтрий състезанието">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </a>
+                }
+            </h1>
+            <div class="container">
+                <div class="col-md-12 text-center"><small class="align-content-end">организирано от <strong>@Model.Organiser.Customer.ApplicationUser.UserName</strong></small></div>
+            </div>
+            
+            <br/>
+            <p class="text-center"><strong>Локация</strong> : @Model.Location <i class="fas fa-map-marker-alt"></i></p>
+            <p class="text-center"><strong>Начало </strong>: @Model.Starting.ToString("MM/dd/yyyy HH:mm") <i class="far fa-calendar-alt"></i> <span class="comp-details-3"></span> <strong>Край</strong> : @Model.Ending.ToString("MM/dd/yyyy HH:mm") <i class="far fa-calendar-alt"></i></p>
+            <p class="text-center"><strong>Максимален брой участници</strong>: @Model.MaxNumberOfParticipants <span class="comp-details"></span>  <strong>Запиисани участници</strong>: @Model.Participants.Count</p>
+            <p class="text-center"><strong>Вид състезание</strong>: @type <i class="fas fa-trophy"></i><span class="comp-details"></span>  <strong>Тип състезание</strong>: 
+                @if (@Model.IsTeamCompetition)
+                {
+                    <span class="comp-details">Отборно <i class="fas fa-users"></i></span>
+                }
+                else
+                {
+                    <span class="comp-details">Индивидуално <i class="fas fa-user-ninja"></i></span>
+                } 
+                <strong>Спорт</strong>: @Model.Sport.Name
+                @switch (@Model.Sport.Name.ToLower())
+                {
+                    case "football": <span> <i class="fas fa-futbol"></i></span>
+                        break;
+                    case "running": <span> <i class="fas fa-running"></i></span>
+                        break;
+                    case "swimming": <span> <i class="fas fa-swimmer"></i></span>
+                        break;
+                    case "baseball": <span> <i class="fas fa-baseball-ball"></i></span>
+                        break;
+                    case "quiddich": <span> <i class="fas fa-quidditch"></i></span>
+                        break;
+                    case "table tennis": <span> <i class="fas fa-table-tennis"></i></span>
+                        break;
+                    case "biking": <span> <i class="fas fa-biking"></i></span>
+                        break;
+                }
+            </p>
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    
+                    <button type="button" class="btn btn-light text-center">
+                        <a class="page-link-with-hover" asp-controller="Competitions" asp-action="InitiateSignIn" asp-route-competitionId="@Model.Id" asp-route-isTeamCompetition="@Model.IsTeamCompetition" title="Запиши се за участие">
+                            @signInButtonLabel
+                        </a>
+                    </button>
+                </div>
+            </div>
+            <hr/>
         </div>
-        <div><h4>Максимален брой участници:</h4> @Model.MaxNumberOfParticipants</div>
-        <div><h4>Запиисани участници:</h4> @Model.Participants.Count</div>
-        <button type="button" class="btn btn-light">
-            <a class="page-link-with-hover" asp-controller="Competitions" asp-action="InitiateSignIn" asp-route-competitionId="@Model.Id" asp-route-isTeamCompetition="@Model.IsTeamCompetition" title="Запиши се за участие">
-                @signInButtonLabel
-            </a>
-        </button>
+    </div>
+    <div class="row">
+        <div class="col-md-3 custom-col-r-p">
+            @if (@Model.EntryFee.HasValue)
+            {
+                <p><strong>Входна такса</strong>: @Model.EntryFee.Value <i class="fas fa-money-bill-wave"></i></p>
+            }
+            @if (@Model.WinningPrize.HasValue)
+            {
+                <p><strong>Награден фонд</strong>: @Model.WinningPrize.Value <i class="fas fa-coins"></i></p>
+                <hr/>
+            }
+            @if (@Model.WinPoints.HasValue)
+            {
+                <p><strong>Точки за победа</strong>: @Model.WinPoints.Value <i class="far fa-smile"></i></p>
+            }
+            @if (@Model.DrawPoints.HasValue)
+            {
+                <p><strong>Точки за равенство</strong>: @Model.DrawPoints.Value <i class="far fa-meh"></i></p>
+            }
+            @if (@Model.CloseLosePoints.HasValue)
+            {
+                <p><strong>Точки за близка загуба</strong>: @Model.CloseLosePoints.Value <i class="far fa-meh"></i></p>
+                <hr/>
+            }
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <strong>Участници: </strong>
+                </div>
+            </div>
+            <p>
+                <ul>
+                    @foreach (var participant in @Model.Participants)
+                    {
+                        @if (@Model.IsTeamCompetition)
+                        {
+                            <li>@participant.Team.Name</li>
+                        }
+                        else
+                        {
+                            <li>@participant.Participant.Customer.ApplicationUser.UserName</li>
+                        }
+                    }
+                </ul>
+            </p>
+        </div>
+        <div class="col-md-auto">
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h4>Правила:</h4>
+                </div>
+            </div>
+            <p>@Model.Rules</p>
+            <hr/>
+
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h4>Допълнителна информация:</h4>
+                </div>
+            </div>
+            <p>@Model.Information</p>
+
+            <hr/>
+            
+            <div class="container">
+                <div class="col-md-12 text-center">
+                    <h4>Мачове:</h4>
+                </div>
+            </div>
+            <p>
+                @foreach (var match in @Model.Matches)
+                {
+                    <span>@match.SideA.</span>
+                    @if (@Model.IsTeamCompetition)
+                    {
+                        <span>@match.SideA.Team.Name - @match.SideB.Team.Name</span>
+                    }
+                    else
+                    {
+                        <span>@match.SideA.Participant..Customer.ApplicationUser.UserName - @match.SideB.Participant.Customer.ApplicationUser.UserName</span>
+                    }
+                    <br/>
+                }
+            </p>
+        </div>
     </div>
 </div>

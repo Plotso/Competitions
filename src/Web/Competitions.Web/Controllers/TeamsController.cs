@@ -91,7 +91,7 @@
             try
             {
                 await _teamsService.EditAsync(inputModel);
-                return RedirectToAction(nameof(ById), inputModel.Id);
+                return RedirectToAction(nameof(ById), new {id = inputModel.Id});
             }
             catch (Exception e)
             {
@@ -123,7 +123,7 @@
         {
             if (onSubmitAction.IsNullOrEmpty() || onSubmitAction == "Откажи")
             {
-                return RedirectToAction(nameof(ById), inputModel.Id);
+                return RedirectToAction(nameof(ById), new {id = inputModel.Id});
             }
             if (!ModelState.IsValid)
             {
