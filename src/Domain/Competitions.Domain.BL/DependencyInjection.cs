@@ -19,7 +19,9 @@
                     .AddTransient<ICustomersService, CustomersService>()
                     .AddTransient<ISportsService, SportsService>()
                     .AddTransient<ITeamsService, TeamsService>()
-                    .AddTransient<ICompetitionsService, CompetitionsService>();
+                    .AddTransient<ICompetitionsService, CompetitionsService>()
+                    .AddTransient<IUsersService, UsersService>()
+                    .AddTransient<IPlatformReviewsService, PlatformReviewsService>();
         }
     }
 }

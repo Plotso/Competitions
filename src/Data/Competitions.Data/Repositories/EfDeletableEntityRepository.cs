@@ -23,14 +23,6 @@
 
         public IQueryable<TEntity> AllAsNoTrackingWithDeleted() => base.AllAsNoTracking().IgnoreQueryFilters();
 
-        /* ToDo: Remove this if not needed
-        public Task<TEntity> GetByIdWithDeletedAsync(params object[] id)
-        {
-            var getByIdPredicate = EfExpressionHelper.BuildByIdPredicate<TEntity>(Context, id);
-            return AllWithDeleted().FirstOrDefaultAsync(getByIdPredicate);
-        }
-        */
-
         public void HardDelete(TEntity entity) => base.Delete(entity);
 
         public void Undelete(TEntity entity)

@@ -1,0 +1,99 @@
+﻿@model Competitions.Web.ViewModels.Customer.UsersListViewModel
+@{
+    ViewData["Title"] = "Списък с потребители";
+    ViewData["Keywords"] = "Потребители, Администратори, Изтрити, Активни, Всички";
+    ViewData["Description"] = "Списък на всички потребители";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Списък с потребители</li>
+    </ol>
+</nav>
+
+<ul class="list-unstyled">
+    @foreach (var user in Model.Users)
+    {
+        <li class="media my-4">
+            <div class="media-body">
+                <h5 class="mt-0 mb-1">@user.UserName</h5>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <span class="user-specific-info">Регистриран на:</span> <span>@user.CreatedOn</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>
+                            <span class="user-specific-info">Статус на акаунта:</span>
+                            @if (@user.IsDeleted)
+                            {
+                                <input type="checkbox" id="role-toggle-@user.UserName" data-toggle="toggle" data-on="Активен" data-off="Изтрит" data-onstyle="success" data-offstyle="danger" disabled>
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="role-toggle-@user.UserName" data-toggle="toggle" data-on="Активен" data-off="Изтрит" data-onstyle="success" data-offstyle="danger" checked disabled>
+                            }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>
+                                <span class="user-specific-info">Роля: </span>
+                                @if (@user.IsAdmin)
+                                {
+                                    <input type="checkbox" id="role-toggle-@user.UserName" data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="success" data-offstyle="danger" checked disabled>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="role-toggle-@user.UserName" data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="success" data-offstyle="danger" disabled>
+                                }
+                            </p>
+                            <div class="btn-group btn-group-sm">
+                                <span class="btn-group mr-2">
+                                    <button type="button" class="btn btn-outline-success user-page-button" onclick="return confirm(`Сигурен ли сте, че искате да промените ролята на дадения потребител?`)">
+                                        <a class="edit-cv-link" asp-controller="Users" asp-action="EditUserRole" asp-route-email="@user.Email" title="Промяна на роля на потребителски профил">
+                                            Промяна на роля
+                                        </a>
+                                    </button>
+                                </span>
+                                @{
+                                    var deleteButtonText = @user.IsDeleted ? "Възстаановяване на изтрит потребител" : "Изтриване на потребител";
+                                }
+                                <span class="btn-group mr-2">
+                                    <button type="button" class="btn btn-outline-danger user-page-button" onclick="return confirm(`Сигурен ли сте, че искате да промените статуса на дадения потребител?`)">
+                                        <a class="page-link-red" asp-controller="Users" asp-action="EditUserIsDeletedStatus" asp-route-email="@user.Email" title="Промяна на статус изтрит на потребителски профил">
+                                            @deleteButtonText
+                                        </a>
+                                    </button>
+                                </span>
+
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <hr>
+    }
+</ul>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>    
+        function changeUserRole(userEmail){
+            let msg = "Сигурен ли сте, че жжелааете да промените ролята на " + userEmail + "?"
+            if (confirm(msg)){
+                let url = '@Url.Action("EditUserRole", "Users", new {email = "__id__"})';
+                window.location.href = url.replace('__id__', userEmail);                
+            }
+        }
+    </script>
+}
+
+

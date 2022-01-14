@@ -50,7 +50,8 @@ namespace Competitions.Web.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            //[Display(Name = "Remember me?")]
+            [Display(Name = "Запомняне на акаунт?")]
             public bool RememberMe { get; set; }
         }
 

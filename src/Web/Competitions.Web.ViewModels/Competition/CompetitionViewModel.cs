@@ -10,6 +10,11 @@
 
     public class CompetitionViewModel : IMapFrom<Competition>
     {
+        /// <summary>
+        /// Used for breadcrumbs
+        /// </summary>
+        public bool IsFromSportPage { get; set; }
+        
         public int Id { get; set; }
         
         public string Title { get; set; }

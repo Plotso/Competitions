@@ -1,0 +1,76 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@using Competitions.Data.Models
+@using Microsoft.AspNetCore.Identity
+@model Competitions.Web.ViewModels.Rating.PlatformReviewViewModel
+@{
+    ViewData["Title"] = "Контакт";
+    ViewData["Keywords"] = "Контакт,Обратна,Връзка,Contact,Feedback";
+    ViewData["Description"] = "Контакт и даване на обратна връзка";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Контакти</li>
+    </ol>
+</nav>
+
+<div class="container">
+    <div class="clearfix text-center">
+        <h1>
+            <i class="fas fa-phone-alt"></i> @ViewData["Title"]
+        </h1>
+
+        <p>
+            <h3>Пишете ни</h3>
+            <div>
+                <form asp-action="Contact" id="comment-form" class="form justify-content-center" type="post">
+                    <div>
+                        <input asp-for="Comment" class="form-control"/>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+                    <br/>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <button type="submit" class="btn btn-secondary create-record-btn">Изпрати</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-secondary create-record-btn" disabled>Изпрати</button>
+                        <br/>
+                        <small>*За да ни пишете, моля да влезете в акаунта си в системата. Мнениието Ви е важно за нас!</small>
+                    }
+                </form>
+            </div>
+        </p>
+
+        <p>
+            Можете да се свържете с нас и на номер: +359 1234566789<i class="fas fa-phone-alt"></i> или да ни откриете на адрес:
+        </p>
+        <div class="iframe-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1466.6155322428422!2d23.25348711177825!3d42.67764753480678!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xea8e06ca71a2aede!2sNew%20Bulgarian%20University!5e0!3m2!1sen!2sbg!4v1642091016709!5m2!1sen!2sbg" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+        <br/>
+
+        <p>
+            <a href="https://www.linkedin.com/in/plotso/" class="btn btn-primary" target="_blank">
+                <i class="fa fa-linkedin-square" aria-hidden="true"></i>
+            </a>
+            <a href="https://github.com/Plotso" class="btn btn-primary" target="_blank">
+                <i class="fa fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.instagram.com/i.ganchosov/" class="btn btn-primary" target="_blank">
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.facebook.com/ilian.ganchosov" class="btn btn-primary" target="_blank">
+                <i class="fa fa-facebook-official" aria-hidden="true"></i>
+            </a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

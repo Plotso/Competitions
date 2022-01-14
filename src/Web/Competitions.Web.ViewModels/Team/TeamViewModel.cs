@@ -14,5 +14,7 @@
         public string CreatorCustomerId { get; set; }
         
         public ICollection<TeamParticipantViewModel> Participants { get; set; }
+        
+        public IEnumerable<CompetitionParticipantViewModel> Competitions { get; set; }
     }
 }

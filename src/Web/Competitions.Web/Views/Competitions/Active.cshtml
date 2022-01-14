@@ -5,19 +5,33 @@
     ViewData["Description"] = "Активни турнири, лиги и други спортни състезания";
 }
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Активни състезаания</li>
+    </ol>
+</nav>
+
 <div>
   <h1 class="text-center">Активни Събития</h1>
+  
+  <div class="container-custom">
+    <img src="~/images/sportsB.jpg" alt="Спортове" style="width:100%;">
+    <div class="centered into-heading">
+    </div>
+  </div>
+  <hr/>
   <div class="table-responsive">
     <table class="table table-hover">
       <thead>
       <tr class="table-success">
         <th scope="col">Спорт</th>
         <th scope="col">Име</th>
-        <th scope="col">Локация</th>
+        <th scope="col"><i class="fas fa-map-marker-alt"></i> Локация</th>
         <th scope="col">Тип състезание</th>
-        <th scope="col">Награден фонд</th>
-        <th scope="col">Начало</th>
-        <th scope="col">Край</th>
+        <th scope="col"><i class="fas fa-coins"></i> Награден фонд</th>
+        <th scope="col"><i class="fas fa-calendar-alt"></i> Начало</th>
+        <th scope="col"><i class="fas fa-calendar-alt"></i> Край</th>
       </tr>
       </thead>
       <tbody>

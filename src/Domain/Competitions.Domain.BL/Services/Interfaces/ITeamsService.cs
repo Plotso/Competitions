@@ -8,6 +8,8 @@
     {
         IEnumerable<T> GetAllByParticipantId<T>(string participantId);
 
+        IEnumerable<T> GetAllByParticipantIdAlt<T>(string participantId);
+
         T GetById<T>(int teamId);
 
         Task<int> CreateAsync(TeamInputModel inputModel, string customerId);

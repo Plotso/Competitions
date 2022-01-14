@@ -1,0 +1,91 @@
+﻿@model Competitions.Web.ViewModels.Customer.CustomerInfoViewModel
+@{
+    ViewData["Title"] = "Спортна информация за потребител";
+    ViewData["Keywords"] = "ИИнформация,Спорт,Потребител,Състезания,Отбори";
+    ViewData["Description"] = "Спортна информация за потребител";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Информация за потребител</li>
+    </ol>
+</nav>
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    
+    @if (Model.Teams != null)
+    {
+        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+            <div class="card-header">Отбори <i class="fas fa-user-plus"></i></div>
+            <div class="card-body text-success">
+                <p class="card-text">
+                    <ol>
+                        @foreach (var team in Model.Teams)
+                        {
+                            <li>
+                                <a asp-controller="Teams" asp-action="ById" asp-route-id="@team.Id" title="Информация за отбора">@team.Name</a>
+                            </li>
+                        }
+                    </ol>
+                </p>
+            </div>
+        </div>
+    }
+    @if (Model.OrganisedCompetitions != null)
+    {
+        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+            <div class="card-header">Организиирани състезаания <i class="fas fa-plus-circle"></i></div>
+            <div class="card-body text-success">
+                <p class="card-text">
+                    <ol>
+                        @foreach (var competition in Model.OrganisedCompetitions)
+                        {
+                            <li>
+                                <a asp-controller="Competitions" asp-action="ById" asp-route-id="@competition.Id" title="Информация за състезанието">@competition.Title</a>
+                            </li>
+                        }
+                    </ol>
+                </p>
+            </div>
+        </div>
+    }
+    @if (Model.TeamCompetitions != null)
+    {
+        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+            <div class="card-header">Учстия в отборни състезаания <i class="fas fa-users"></i></div>
+            <div class="card-body text-success">
+                <p class="card-text">
+                    <ol>
+                        @foreach (var competition in Model.TeamCompetitions)
+                        {
+                            <li>
+                                <a asp-controller="Competitions" asp-action="ById" asp-route-id="@competition.Id" title="Информация за състезанието">@competition.Title</a>
+                            </li>
+                        }
+                    </ol>
+                </p>
+            </div>
+        </div>
+    }
+    @if (Model.IndividualCompetitions != null)
+    {
+        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+            <div class="card-header">Учстия в индивидуални състезаания <i class="fas fa-user-ninja"></i></div>
+            <div class="card-body text-success">
+                <p class="card-text">
+                    <ol>
+                        @foreach (var competition in Model.IndividualCompetitions)
+                        {
+                            <li>
+                                <a asp-controller="Competitions" asp-action="ById" asp-route-id="@competition.Id" title="Информация за състезанието">@competition.Title</a>
+                            </li>
+                        }
+                    </ol>
+                </p>
+            </div>
+        </div>
+    }
+</div>

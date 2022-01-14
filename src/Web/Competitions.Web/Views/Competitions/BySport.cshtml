@@ -4,10 +4,34 @@
     var sport = firstCompetition?.Sport.Name ?? string.Empty;
     var isFinished = firstCompetition?.Ending >= DateTime.UtcNow;
     var type = isFinished ? "Приключили" : "Активни и Предстоящи";
+  
+    var isUpcoming = firstCompetition.Starting > DateTime.Now;
+    var hasEnded = firstCompetition.Ending < DateTime.Now;
+    var timeGroup = isUpcoming ? "Предстоящи състезания" : hasEnded ? "Приключили състезания" : "Активни състезания";
+  
     ViewData["Title"] = @type + " Състезания, турнири и лиги" + (sport == string.Empty ? string.Empty : $" - {sport}");
     ViewData["Keywords"] = $"Състезания, Турнири, Лиги, {type}, {sport}";
     ViewData["Description"] = $"{type} турнири, лиги и други спортни състезания";
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        @if (isUpcoming)
+        {
+            <li class="breadcrumb-item"><a sp-controller="Competitions" asp-action="Upcoming" title="Предстоящи състезания">@timeGroup</a></li>
+        }
+        else if (hasEnded)
+        {
+            <li class="breadcrumb-item"><a sp-controller="Competitions" asp-action="Finished" title="Приключили състезания">@timeGroup</a></li>
+        }
+        else
+        {
+            <li class="breadcrumb-item"><a sp-controller="Competitions" asp-action="Active" title="Активни състезания">@timeGroup</a></li>
+        }
+        <li class="breadcrumb-item active" aria-current="page">@sport</li>
+    </ol>
+</nav>
 
 <div>
   <h1 class="text-center">@type Състезания - @sport  </h1>
@@ -16,11 +40,11 @@
       <thead>
       <tr class="table-success">
         <th scope="col">Име</th>
-        <th scope="col">Локация</th>
+        <th scope="col"><i class="fas fa-map-marker-alt"></i> Локация</th>
         <th scope="col">Тип състезание</th>
-        <th scope="col">Награден фонд</th>
-        <th scope="col">Начало</th>
-        <th scope="col">Край</th>
+        <th scope="col"><i class="fas fa-coins"></i> Награден фонд</th>
+        <th scope="col"><i class="fas fa-calendar-alt"></i> Начало</th>
+        <th scope="col"><i class="fas fa-calendar-alt"></i> Край</th>
       </tr>
       </thead>
       <tbody>

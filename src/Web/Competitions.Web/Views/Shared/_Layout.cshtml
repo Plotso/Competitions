@@ -1,5 +1,20 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using Competitions.Data.Models
+@using Microsoft.AspNetCore.Identity
+@using Competitions.Common
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    bool IsCurrentUserAdmin()
+    {
+        var user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+        var roles = UserManager.GetRolesAsync(user).GetAwaiter().GetResult();
+        return roles.Any(r => r == GlobalConstants.AdministratorRoleName);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +24,11 @@
     <script src="https://kit.fontawesome.com/7d47a6bd51.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <meta property="og:url"                content="https://competitionsbg.azurewebsites.net" />
+    <meta property="og:type"               content="website" />
+    <meta property="og:title"              content="Огромен набор от спортни състезания в различни направление" />
+    <meta property="og:description"        content="Не е ли най-добрият момент за впускане в ново състезание? Ела и разгледай какви предстоящи събития има в твоя регион, а пък ако си мераклия, може и да организираш едно, да се кефят хората!" />
+    <meta property="og:image"              content="https://www.ozarkradionews.com/ozarkradionews/wp-content/uploads/2018/04/sports6.jpg" />
 </head>
 <body>
     <header>
@@ -22,45 +42,32 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index" title="Начална страница">Home</a>
-                        </li>
-                        <li class="nav-item">
-                        <!--
-                        <div class="btn-group dropright">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Състезания
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="1">Футбол</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="2">Тенис</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="3">Шах</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="4">ESports</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="5">Скуош</a></button>
-                                <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="6">Дартс</a></button>
-                            </div>
-                        </div>
-                        -->
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Състезания</a>
-                            <div class="dropdown-menu dropright" aria-labelledby="navbarDropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">По Спорт</a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="1" title="Футболни състезания">Футбол</a></button>
-                                    <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="2" title="Тенис състезания">Тенис</a></button>
-                                    <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="3" title="Шах състезания">Шах</a></button>
-                                    <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="4" title="ESports състезания">ESports</a></button>
-                                    <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="5" title="Скуош състезания">Скуош</a></button>
-                                    <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="6" title="Дартс състезания">Дартс</a></button>
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Състезания</a>
+                                <div class="dropdown-menu dropright" aria-labelledby="navbarDropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">По Спорт</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="1" title="Футболни състезания">Футбол</a></button>
+                                        <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="2" title="Тенис състезания">Тенис</a></button>
+                                        <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="3" title="Шах състезания">Шах</a></button>
+                                        <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="4" title="ESports състезания">ESports</a></button>
+                                        <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="5" title="Скуош състезания">Скуош</a></button>
+                                        <button type="button" class="dropdown-item btn btn-info btn-sm"><a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="BySport" asp-route-sportId="6" title="Дартс състезания">Дартс</a></button>
+                                    </div>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Upcoming" title="Предстоящи състезания">Предстоящи</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Active" title="Активни състезания">Активни</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Finished" title="Приключили състезания">Приключили</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="All"  title="Всички състезания">Всички състезания</a>
                                 </div>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Upcoming" title="Предстоящи състезания">Предстоящи</a>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Active" title="Активни състезания">Активни</a>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="Finished" title="Приключили състезания">Приключили</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Competitions" asp-action="All"  title="Всички състезания">Всички състезания</a>
                             </div>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"  title="Предстоящи състезания">Privacy</a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User) && IsCurrentUserAdmin())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="All" title="Списък с потребители">Потребители</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -76,12 +83,14 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - Competitions.bg - <a asp-area="" asp-controller="Home" asp-action="Privacy" title="Лични данни">Лични данни</a> | <a asp-area="" asp-controller="Home" asp-action="Terms" title="Общи условия">Общи условия</a>
+            &copy; @DateTime.UtcNow.Year - Competitions.bg - <a asp-area="" asp-controller="Home" asp-action="Privacy" title="Лични данни">Лични данни</a> | <a asp-area="" asp-controller="Home" asp-action="Terms" title="Общи условия">Общи условия</a> | <a asp-area="" asp-controller="Home" asp-action="About" title="За нас">За нас</a> | <a asp-area="" asp-controller="Home" asp-action="Contact" title="Контаакт">Контакт</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -7,6 +7,7 @@ namespace Competitions.Domain.BL.Services
     using Data.Models;
     using Data.Models.Customer;
     using Interfaces;
+    using Mapping.Mapping.Single;
     using Microsoft.Extensions.Logging;
 
     public class CustomersService : ICustomersService
@@ -128,5 +129,11 @@ namespace Competitions.Domain.BL.Services
 
             return customer.Id;
         }
+
+        public T GetParticipant<T>(string participantId) 
+            => _participantsRepository.All().Where(p => p.Id == participantId).To<T>().FirstOrDefault();
+
+        public T GetOrganiserByParticipantId<T>(string participantId) 
+            => _participantsRepository.All().Where(p => p.Id == participantId).Select(p => p.Customer.Organiser).To<T>().FirstOrDefault();
     }
 }

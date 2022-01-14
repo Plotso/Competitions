@@ -10,6 +10,7 @@ namespace Competitions.Web
     using Data.Seeding;
     using Domain.BL;
     using Domain.Mapping.Mapping.Single;
+    using Healthchecks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,9 @@ namespace Competitions.Web
             
             services.RegisterDataAccessLayer(_configuration);
             services.RegisterDomainServices();
+            
+            services.AddHealthChecks()
+                .AddCheck<SqlHealthcheck>("DB");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,6 +105,9 @@ namespace Competitions.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+
+            app.UseHealthChecks("/health");
 
             app.UseEndpoints(
                 endpoints =>

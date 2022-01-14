@@ -3,6 +3,14 @@
     ViewData["Keywords"] = "Условия,Ползване,Услуги,Competitions,Договор";
     ViewData["Description"] = "Общи условия - Договор за ползване на услугите на Competitions.bg";
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Общи условия</li>
+    </ol>
+</nav>
+
 <h1>@ViewData["Title"]</h1>
 <div class="center-custom">
     <img src="~/images/termsimg.jpg" class="error-code-image" alt="Общи условия">

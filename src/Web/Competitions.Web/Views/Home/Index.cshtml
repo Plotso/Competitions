@@ -1,6 +1,7 @@
 ﻿@using Competitions.Data.Models
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
+@model Competitions.Web.BusinessViewModels.IndexViewModel
 @{
     ViewData["Title"] = "Competitions.bg - Спортни Турнири и Лиги";
     ViewData["Keywords"] = "Състезания, Турнири, Лиги, Спорт";
@@ -8,22 +9,114 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Добре дошли!</h1>
+    <div class="container-custom">
+        <img src="~/images/sportsA.jpg" alt="Спортове" style="width:100%;">
+        <div class="centered into-heading">
+            <h1 class="display-4">
+                <strong>
+                    <em>Добре дошли!</em>
+                </strong>
+            </h1>
+        </div>
+    </div>
     <p>
-        Competitions.bg е платформа, която цели да помогне на хората, желаещи да участват в спортни състезания, но нямат такава възможност.
-        Сайтът предоставя опцията за свободно <strong>създаване на турнири, лиги и разнообразни спортни състезания</strong>.
-        Платформата е напълно безплатна, като всеки има възможност да организира свой турнир или да се запише като участник във вече организиран турнир. 
+        <strong class="text-success">Competitions.bg</strong> е платформа, която цели да помогне на хората, желаещи да участват в спортни състезания, но нямат такава възможност.
+        Сайтът предоставя опцията за свободно <strong class="text-success">създаване на турнири, лиги и разнообразни спортни състезания</strong>.
+        Платформата е напълно безплатна, като всеки има възможност да организира свой турнир или да се запише като участник във вече организиран турнир.
         <em>Входна такса, награден фонд и всякакви опционални финансови параметри на дадено състезание се поемат от организатора на турнира. Платформата служи като социална мрежа за срещане на спортни ентусиасти, не се включва директно в провеждането на състезанията!</em>
         Competitions.bg е създаден с целта да се повиши броят на активно спортуващите хора, като чрез свободното оргнизиране на състезнаия всеки участник може да повиши своя спортен хъс и адреналин, да избяга от натовареното ежедневие и да разшири социалния си кръг, тъй като спортните събития са идеално място за нови запонанства с хора със сходни интереси!
     </p>
     <p>
-        При желание на потребител да организира спортно събитие, то той се ангажира и с резервирането на съответните спорти игрища, кортове или зали, необходими за провеждането му. 
+        При желание на потребител да организира спортно събитие, то той се ангажира и с резервирането на съответните спорти игрища, кортове или зали, необходими за провеждането му.
         Ако все още не сте избрали къде да се проведе желаното от вас състезание или пък няма свободни часове за обявените дати, винаги може да видите различни опции в свободно достъпни сайтове като например платформата
         <a target="_blank" href="https://clickandplay.bg">ClickAndPlay</a>
     </p>
-    
-    
-        
+
+    <div class="container">
+        <h4 class="text-success">Статистика на брой състезаанията в платформата</h4>
+        <div class="row">
+            @if (Model != null)
+            {
+                <div class="col-md-4">
+                    @if (Model.RankingByStatus != null)
+                    {
+                        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+                            <div class="card-header">По статус <i class="fas fa-history"></i></div>
+                            <div class="card-body text-success">
+                                <p class="card-text">
+                                    <ol>
+                                        @foreach (var rank in Model.RankingByStatus)
+                                        {
+                                            <li>@rank.GroupName: @rank.Points</li>
+                                        }
+                                    </ol>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    @if (Model.RankingBySport != null)
+                    {
+                        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+                            <div class="card-header">По спорт <i class="fas fa-biking"></i></div>
+                            <div class="card-body text-success">
+                                <p class="card-text">
+                                    <ol>
+                                        @foreach (var rank in Model.RankingBySport)
+                                        {
+                                            <li>
+                                                @rank.GroupName 
+                                                    @switch (rank.GroupName.ToLower())
+                                                    {
+                                                        case "football": <span> <i class="fas fa-futbol"></i></span>
+                                                            break;
+                                                        case "running": <span> <i class="fas fa-running"></i></span>
+                                                            break;
+                                                        case "swimming": <span> <i class="fas fa-swimmer"></i></span>
+                                                            break;
+                                                        case "baseball": <span> <i class="fas fa-baseball-ball"></i></span>
+                                                            break;
+                                                        case "quiddich": <span> <i class="fas fa-quidditch"></i></span>
+                                                            break;
+                                                        case "table tennis": <span> <i class="fas fa-table-tennis"></i></span>
+                                                            break;
+                                                        case "biking": <span> <i class="fas fa-biking"></i></span>
+                                                            break;
+                                                    }
+                                                : @rank.Points
+                                            </li>
+                                        }
+                                    </ol>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    @if (Model.RankingByLocation != null)
+                    {
+                        <div class="card border-success mb-3" style="max-width: 18rem; height: 10rem;">
+                            <div class="card-header">По локация <i class="fas fa-map-marked-alt"></i></div>
+                            <div class="card-body text-success">
+                                <p class="card-text">
+                                    <ol>
+                                        @foreach (var rank in Model.RankingByLocation)
+                                        {
+                                            <li>@rank.GroupName: @rank.Points</li>
+                                        }
+                                    </ol>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <hr/>
+
+
     <button type="button" class="btn btn-light">
         <a class="page-link-with-hover" asp-controller="Competitions" asp-action="Upcoming" title="Предстоящи състезания">
             Предстоящи състезания
@@ -42,6 +135,5 @@
             </a>
         </button>
     }
+    <br/>
 </div>
-
-

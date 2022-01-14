@@ -27,6 +27,13 @@
 
         public IEnumerable<T> GetAllByParticipantId<T>(string participantId) => Teams.Where(t => t.Participants.Any(p => p.ParticipantId == participantId)).To<T>();
 
+        public IEnumerable<T> GetAllByParticipantIdAlt<T>(string participantId)
+        {
+            var participant = _participantsRepository.All().FirstOrDefault(p => p.Id == participantId);
+            var participantTeams = participant?.Teams.Select(pt => pt.Team);
+            return participantTeams.Map<Team, T>();
+        }
+
         public T GetById<T>(int teamId) => Teams.Where(t => t.Id == teamId).To<T>().FirstOrDefault();
 
         public async Task<int> CreateAsync(TeamInputModel inputModel, string customerId)

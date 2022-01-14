@@ -11,5 +11,9 @@ namespace Competitions.Domain.BL.Services.Interfaces
         string GetParticipantId(string applicationUserId);
 
         string GetCustomerId(string applicationUserId);
+
+        T GetParticipant<T>(string participantId);
+
+        T GetOrganiserByParticipantId<T>(string participantId);
     }
 }

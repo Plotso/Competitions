@@ -1,6 +1,13 @@
 @model System.Collections.Generic.List<Competitions.Web.ViewModels.Sport.SportViewModel>
 
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Спортове</li>
+    </ol>
+</nav>
+
 @foreach (var sport in Model)
 {
     <h3>@sport.Name</h3>

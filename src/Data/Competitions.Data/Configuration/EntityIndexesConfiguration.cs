@@ -3,6 +3,7 @@
     using System.Linq;
     using Common.Models.Interfaces;
     using Microsoft.EntityFrameworkCore;
+    using Models;
     using Models.Customer;
     using Models.Team;
 
@@ -10,7 +11,7 @@
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            // UniqueID index
+            // UniqueID indexes
             var personEntities = modelBuilder.Model.GetEntityTypes().Where(e => e.ClrType != null && typeof(Customer).IsAssignableFrom(e.ClrType));
             foreach (var entity in personEntities)
             {
@@ -25,6 +26,14 @@
                 modelBuilder
                     .Entity(entity.ClrType)
                     .HasIndex(nameof(Team.Name))
+                    .IsUnique();
+            }
+            var sportEntities = modelBuilder.Model.GetEntityTypes().Where(e => e.ClrType != null && typeof(Sport).IsAssignableFrom(e.ClrType));
+            foreach (var entity in sportEntities)
+            {
+                modelBuilder
+                    .Entity(entity.ClrType)
+                    .HasIndex(nameof(Sport.Name))
                     .IsUnique();
             }
             

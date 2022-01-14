@@ -11,8 +11,6 @@
 
         IQueryable<TEntity> AllAsNoTrackingWithDeleted();
 
-        //Task<TEntity> GetByIdWithDeletedAsync(params object[] id); // ToDo: Maybe remove this
-
         void HardDelete(TEntity entity);
 
         void Undelete(TEntity entity);

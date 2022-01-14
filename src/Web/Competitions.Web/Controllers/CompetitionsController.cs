@@ -118,7 +118,7 @@
                 {
                     if (isTeamCompetition)
                     {
-                        var participantTeams = _teamsService.GetAllByParticipantId<TeamViewModel>(participantId).ToList();
+                        var participantTeams = _teamsService.GetAllByParticipantIdAlt<TeamViewModel>(participantId).ToList();
                         if (!participantTeams.Any())
                         {
                             return RedirectToAction("Create", "Teams");
@@ -309,7 +309,6 @@
             try
             {
                 await _competitionsService.DeleteAsync(inputModel.Id);
-                //ToDo: Delete also related reservations, competitionParticipants & so on
                 return RedirectToAction(nameof(All));
             }
             catch (Exception e)

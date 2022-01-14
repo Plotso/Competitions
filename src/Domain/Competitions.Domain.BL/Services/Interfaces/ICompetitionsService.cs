@@ -4,10 +4,13 @@
     using System.Threading.Tasks;
     using Data.Models.Competition;
     using Enums;
+    using Models;
     using Web.ViewModels.Competition;
 
     public interface ICompetitionsService
     {
+        IEnumerable<TopRankingDTO> GetTopNByCriteria(int numberOfResults, RankingCriteria criteria);
+
         T GetById<T>(int competitionId);
         
         IEnumerable<T> GetAll<T>();

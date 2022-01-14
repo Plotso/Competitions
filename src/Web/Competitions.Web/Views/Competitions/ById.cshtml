@@ -9,13 +9,20 @@
 @model Competitions.Web.ViewModels.Competition.CompetitionViewModel
 
 @{
-    ViewData["Title"] = @Model.Title;
+    ViewData["Title"] = Model.Title;
     ViewData["Keywords"] = "Състезания, Всички състезания, Турнири, Всички турнири, Лиги, Всички Лиги, Спорт";
-    ViewData["Description"] = $"Състезание - {@Model.Title}";
+    ViewData["Description"] = $"Състезание - {Model.Title}";
 
-    var type = @Model.Type == CompetitionTypeViewModel.Tournament ? 
-        "Турнир" :
-        @Model.Type == CompetitionTypeViewModel.League ? "Лига" : "Друг";
+    var type = Model.Type switch
+    {
+        CompetitionTypeViewModel.Tournament => "Турнир",
+        CompetitionTypeViewModel.League => "Лига",
+        _ => "Друг"
+        };
+
+    var isUpcoming = Model.Starting > DateTime.Now;
+    var hasEnded = Model.Ending < DateTime.Now;
+    var timeGroup = isUpcoming ? "Предстоящи състезания" : hasEnded ? "Приключили състезания" : "Активни състезания";
     
     
     bool IsOrganiserOrAdmin(string competitionOrganiserId)
@@ -32,8 +39,28 @@
         return userRoles.Any(r => r == GlobalConstants.AdministratorRoleName);
     }
 
-    var signInButtonLabel = @Model.IsTeamCompetition ? "Запиши отбор за участие" : "Запиши се за участие";
+    var signInButtonLabel = Model.IsTeamCompetition ? "Запиши отбор за участие" : "Запиши се за участие";
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" title="Начална страница">Начало</a></li>
+        @if (isUpcoming)
+        {
+            <li class="breadcrumb-item"><a sp-controller="Competitions" asp-action="Upcoming" title="Предстоящи състезания">@timeGroup</a></li>
+        }
+        else if (hasEnded)
+        {
+            <li class="breadcrumb-item"><a sp-controller="Competitions" asp-action="Finished" title="Приключили състезания">@timeGroup</a></li>
+        }
+        else
+        {
+            <li class="breadcrumb-item"><a sp-controller="Competitions" asp-action="Active" title="Активни състезания">@timeGroup</a></li>
+        }
+        <li class="breadcrumb-item"><a asp-controller="Competitions" asp-action="BySport" asp-route-sportId="@Model.Sport.Id" asp-route-isFinished="@hasEnded" title="Страница за спорт">@Model.Sport.Name</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+    </ol>
+</nav>
 
 <div class="container">
     <div class="row">
@@ -125,25 +152,28 @@
                 <hr/>
             }
             <div class="container">
-                <div class="col-md-12 text-center">
-                    <strong>Участници: </strong>
-                </div>
+                    <div class="card border-light" style="max-width: 100%;">
+                        <div class="card-header"><strong>Участници <i class="fas fa-user-friends"></i></strong> </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <ul>
+                                                    @foreach (var participant in @Model.Participants)
+                                                    {
+                                                        @if (@Model.IsTeamCompetition)
+                                                        {
+                                                            <li>@participant.Team.Name</li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li>@participant.Participant.Customer.ApplicationUser.UserName</li>
+                                                        }
+                                                    }
+                                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                
             </div>
-            <p>
-                <ul>
-                    @foreach (var participant in @Model.Participants)
-                    {
-                        @if (@Model.IsTeamCompetition)
-                        {
-                            <li>@participant.Team.Name</li>
-                        }
-                        else
-                        {
-                            <li>@participant.Participant.Customer.ApplicationUser.UserName</li>
-                        }
-                    }
-                </ul>
-            </p>
         </div>
         <div class="col-md-auto">
             <div class="container">

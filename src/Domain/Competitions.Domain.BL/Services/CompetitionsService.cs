@@ -13,6 +13,7 @@
     using Interfaces;
     using Mapping.Mapping.Single;
     using Microsoft.Extensions.Logging;
+    using Models;
     using Web.ViewModels.Competition;
 
     public class CompetitionsService : ICompetitionsService
@@ -38,6 +39,46 @@
             _organisersRepository = organisersRepository;
             _participantsRepository = participantsRepository;
             _logger = logger;
+        }
+
+        public IEnumerable<TopRankingDTO> GetTopNByCriteria(int numberOfResults, RankingCriteria criteria)
+        {
+            if (criteria == RankingCriteria.Location)
+            {
+                return Competitions
+                    .GroupBy(c => c.Location)
+                    .OrderByDescending(g => g.Count())
+                    .Take(numberOfResults)
+                    .Select(g => new TopRankingDTO
+                        {GroupName = g.Key, Points = g.Count()});
+            }
+            if (criteria == RankingCriteria.Sport)
+            {
+                return Competitions
+                    .GroupBy(c => c.Sport.Name)
+                    .OrderByDescending(g => g.Count())
+                    .Take(numberOfResults)
+                    .Select(g => new TopRankingDTO
+                        {GroupName = g.Key, Points = g.Count()});
+            }
+            if (criteria == RankingCriteria.Status)
+            {
+                // Upcoming, Active, Finished
+                var upcomingCount = Competitions.AsEnumerable().Where(UpcomingFilter()).Count();
+                var activeCount = Competitions.AsEnumerable().Where(ActiveFilter()).Count();
+                var finishedCount = Competitions.AsEnumerable().Where(FinishedFilter()).Count();
+                var result = new List<TopRankingDTO>(numberOfResults)
+                {
+                    new TopRankingDTO{ GroupName = "Upcoming", Points = upcomingCount},
+                    new TopRankingDTO{ GroupName = "Active", Points = activeCount},
+                    new TopRankingDTO{ GroupName = "Finished", Points = finishedCount},
+                };
+
+                return result.OrderByDescending(r => r.Points);
+            }
+
+            throw new InvalidOperationException("Provided ranking criteria is not supported!");
+            return Array.Empty<TopRankingDTO>();
         }
 
         public T GetById<T>(int competitionId) => Competitions.Where(c => c.Id == competitionId).To<T>().FirstOrDefault();
@@ -256,6 +297,12 @@
             var competition = GetById(id);
             if (competition != null)
             {
+                var participants = competition.Participants;
+                foreach (var participant in participants)
+                {
+                    _competitionParticipantsMappingRepository.Delete(participant);
+                    await _competitionParticipantsMappingRepository.SaveChangesAsync();
+                }
                 _competitionsRepository.Delete(competition);
                 await _competitionsRepository.SaveChangesAsync();
             }
@@ -268,7 +315,7 @@
 
 
         private Func<Competition, bool> GetFilterByStatus(CompetitionStatus status) => status switch
-        { // ToDo: Verify filters since results on site ain't correct
+        {
             CompetitionStatus.Active => ActiveFilter(),
             CompetitionStatus.Upcoming => UpcomingFilter(),
             CompetitionStatus.Finished => FinishedFilter(),
